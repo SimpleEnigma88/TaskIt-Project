@@ -1,0 +1,56 @@
+<div class="flex-container container">
+  <h1>Task List!</h1>
+  <div class="d-flex">
+    <div class="align-self-center">
+      <span><b>Filters:</b></span>
+      <select class="form-select d-inline-flex p-2" style="width:10%; min-width: 85px" name="status" id="status">
+        <option selected>Status</option>
+        <option value="complete">Complete</option>
+        <option value="pending">Pending</option>
+        <option value="not-started">Not Started</option>
+      </select>
+      <select class="form-select d-inline-flex p-2" style="width:10%; min-width: 85px" name="sort" id="sort">
+        <option selected>Date</option>
+        <option value="date">Newest</option>
+        <option value="priority">Oldest</option>
+      </select>
+      <select class="form-select d-inline-flex p-2" style="width:10%; min-width: 85px" name="priority" id="priority">
+        <option selected>Priority</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="ms-auto p-2"><button class="btn btn-success d-flex justify-content-end">Kick Me!</button></div>
+
+  </div>
+  <div class="task-table">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Due Date</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>asdf</td>
+          <td>asdf</td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>asdf</td>
+          <td>asdf</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
