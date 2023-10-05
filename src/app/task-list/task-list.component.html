@@ -1,15 +1,17 @@
-<div class="flex-container container">
-  <h1>Task List!</h1>
+<div class="flex-container container" style="padding: 50px 25px 0 25px">
+  <h1>Task List</h1>
   <div class="d-flex">
     <div class="align-self-center">
-      <span><b>Filters:</b></span>
-      <select class="form-select d-inline-flex" style="width:10%; min-width: 100px" name="status" id="status">
+      <span style="margin-right: 5px;"><b>Filters:</b></span>
+      <select class="form-select d-inline-flex" style="width:10%; min-width: 100px; margin-right: 5px;" name="status"
+        id="status">
         <option selected>Status</option>
-        <option value="complete">Complete</option>
+        <option value="complete">Not Started</option>
         <option value="pending">Pending</option>
-        <option value="not-started">Not Started</option>
+        <option value="not-started">Completed</option>
       </select>
-      <select class="form-select d-inline-flex" style="width:10%; min-width: 85px" name="sort" id="sort">
+      <select class="form-select d-inline-flex" style="width:10%; min-width: 85px; margin-right: 5px;" name="sort"
+        id="sort">
         <option selected>Date</option>
         <option value="date">Newest</option>
         <option value="priority">Oldest</option>
@@ -35,20 +37,23 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody *ngFor="let task of taskList;">
         <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>asdf</td>
-          <td>asdf</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>asdf</td>
-          <td>asdf</td>
+          <td>{{ task.title }}</td>
+          <td>{{ task.dueDate }}</td>
+          <td>{{ task.priority }}</td>
+          <td>{{ task.status }}</td>
+          <td>
+            <span class="material-symbols-outlined" style="margin-right: 5px;">
+              visibility
+            </span>
+            <span class="material-symbols-outlined" style="margin-right: 5px;">
+              edit_square
+            </span>
+            <span class="material-symbols-outlined">
+              delete
+            </span>
+          </td>
         </tr>
       </tbody>
     </table>
