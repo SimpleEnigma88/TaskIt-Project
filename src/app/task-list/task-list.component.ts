@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogOverviewExampleDialog } from '../dialog-overview-example-dialog/dialog-overview-example-dialog';
 import { DialogData } from './task.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css']
 })
+
 export class TaskListComponent {
   name: string;
   dueDate: Date;
@@ -41,7 +43,21 @@ export class TaskListComponent {
   }
 
   deleteTask(index: number) {
-    this.taskList.splice(index, 1);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to undo this!",
+      icon: 'warning',
+      allowOutsideClick: false,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.taskList.splice(index, 1);
+        Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
+      }
+    });
   }
 
   openDialog(): void {
@@ -50,10 +66,8 @@ export class TaskListComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (!result) return;
-      if (this.validateData(result)) {
+      if (result && this.validateData(result)) {
         this.addTask(result);
-        console.log(result);
       }
       else {
         alert("Please fill in all fields");
@@ -72,10 +86,8 @@ export class TaskListComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (!result) return;
-      if (this.validateData(result)) {
+      if (result && this.validateData(result)) {
         this.editTask(index, result);
-        console.log(result);
       }
       else {
         alert("Please fill in all fields");
