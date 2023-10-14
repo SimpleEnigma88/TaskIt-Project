@@ -4,14 +4,14 @@
     <div class="align-self-center">
       <span style="margin-right: 5px;"><b>Filters:</b></span>
       <select class="form-select d-inline-flex" style="width:10%; min-width: 100px; margin-right: 5px;" name="status"
-        id="status">
+          id="status">
         <option selected>Status</option>
         <option value="complete">Not Started</option>
         <option value="pending">Pending</option>
         <option value="not-started">Completed</option>
       </select>
       <select class="form-select d-inline-flex" style="width:10%; min-width: 85px; margin-right: 5px;" name="sort"
-        id="sort">
+          id="sort">
         <option selected>Date</option>
         <option value="date">Newest</option>
         <option value="priority">Oldest</option>
@@ -23,7 +23,8 @@
         <option value="low">Low</option>
       </select>
     </div>
-    <div class="ms-auto p-2"><button class="btn btn-success d-flex justify-content-end">Add New Task</button></div>
+    <div class="ms-auto p-2"><button class="btn btn-success d-flex justify-content-end" (click)="openDialog()">Add New
+        Task</button></div>
 
   </div>
   <div class="task-table">
@@ -37,22 +38,22 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody *ngFor="let task of taskList;">
+      <tbody *ngFor="let task of taskList; let i = index;">
         <tr>
-          <td>{{ task.title }}</td>
-          <td>{{ task.dueDate }}</td>
+          <td>{{ task.name }}</td>
+          <td>{{ task.dueDate | date:'MM/dd/yyyy' }}</td>
           <td>{{ task.priority }}</td>
           <td>{{ task.status }}</td>
           <td>
             <span class="material-symbols-outlined" style="margin-right: 5px;">
               visibility
             </span>
-            <span class="material-symbols-outlined" style="margin-right: 5px;">
+            <span class="material-symbols-outlined" style="margin-right: 5px;" (click)="editDialog(i)">
               edit_square
             </span>
-            <span class="material-symbols-outlined">
-              delete
-            </span>
+            <a (click)="deleteTask(i)"><span class="material-symbols-outlined">
+                delete
+              </span></a>
           </td>
         </tr>
       </tbody>

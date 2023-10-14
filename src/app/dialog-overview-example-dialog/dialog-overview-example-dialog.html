@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>Add New Task</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Task Name:</mat-label>
+    <input matInput [(ngModel)]="data.name">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Date: </mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="data.dueDate">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Priority:</mat-label>
+    <mat-select [(ngModel)]="data.priority">
+      <mat-option value="High">High</mat-option>
+      <mat-option value="Medium">Medium</mat-option>
+      <mat-option value="Low">Low</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Status:</mat-label>
+    <mat-select [(ngModel)]="data.status">
+      <mat-option value="To Do">To Do</mat-option>
+      <mat-option value="In Progress">In Progress</mat-option>
+      <mat-option value="Complete">Complete</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Add Task</button>
+</div>

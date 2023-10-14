@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogOverviewExampleDialog } from '../dialog-overview-example-dialog/dialog-overview-example-dialog';
+import { DialogData } from './task.model';
 
 @Component({
   selector: 'app-task-list',
@@ -6,23 +9,81 @@ import { Component } from '@angular/core';
   styleUrls: ['./task-list.component.css']
 })
 export class TaskListComponent {
+  name: string;
+  dueDate: Date;
+  priority: string;
+  status: string;
+  isEdit: boolean = false;
+  appTask: string = "Edit Task";
+
+  constructor(public dialog: MatDialog) { }
+
+  addTask(task) {
+    this.taskList.push(task);
+  }
+
+  editTask(index: number, result: DialogData) {
+    const task = this.taskList[index];
+    if (task) {
+      task.name = result.name;
+      task.dueDate = new Date(result.dueDate);
+      task.status = result.status;
+      task.priority = result.priority;
+    }
+
+
+
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+      data: { name: this.name, dueDate: this.dueDate, priority: this.priority, status: this.status },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if (result) this.addTask(result);
+      console.log(result);
+    });
+
+  }
+
+  editDialog(index: number): void {
+    this.isEdit = true;
+    const editTask = this.taskList[index];
+
+
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+      data: { name: editTask.name, dueDate: editTask.dueDate, priority: editTask.priority, status: editTask.status },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if (result) this.editTask(index, result);
+      console.log(result);
+    });
+
+  }
+
   taskList = [{
-    title: "Get Angular Project Started",
-    dueDate: '10/1/2023',
+    name: "Get Angular Project Started",
+    dueDate: new Date('10/1/2023'),
     priority: 'High',
     status: 'In Progress'
-  },{
-    title: "Clean Carport",
-    dueDate: '10/15/2023',
+  }, {
+    name: "Clean Carport",
+    dueDate: new Date('10/1/2023'),
     priority: 'Low',
-    status: 'Not Started'
-  },{
-    title: "Get Oil Changed",
-    dueDate: '10/25/2023',
+    status: 'To Do'
+  }, {
+    name: "Get Oil Changed",
+    dueDate: new Date('10/1/2023'),
     priority: 'High',
-    status: 'Completed'
+    status: 'Complete'
   }];
 
-
+  deleteTask(index: number) {
+    this.taskList.splice(index, 1);
+  }
 
 }
