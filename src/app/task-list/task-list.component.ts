@@ -18,6 +18,14 @@ export class TaskListComponent {
 
   constructor(public dialog: MatDialog) { }
 
+  validateData(result) {
+    if (result.name && result.dueDate && result.priority && result.status) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   addTask(task) {
     this.taskList.push(task);
   }
@@ -30,20 +38,26 @@ export class TaskListComponent {
       task.status = result.status;
       task.priority = result.priority;
     }
+  }
 
-
-
+  deleteTask(index: number) {
+    this.taskList.splice(index, 1);
   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-      data: { name: this.name, dueDate: this.dueDate, priority: this.priority, status: this.status },
+      data: { title: "Add Task", name: this.name, dueDate: this.dueDate, priority: this.priority, status: this.status },
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      if (result) this.addTask(result);
-      console.log(result);
+      if (!result) return;
+      if (this.validateData(result)) {
+        this.addTask(result);
+        console.log(result);
+      }
+      else {
+        alert("Please fill in all fields");
+      }
     });
 
   }
@@ -54,14 +68,21 @@ export class TaskListComponent {
 
 
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-      data: { name: editTask.name, dueDate: editTask.dueDate, priority: editTask.priority, status: editTask.status },
+      data: { title: 'Edit Task', name: editTask.name, dueDate: editTask.dueDate, priority: editTask.priority, status: editTask.status },
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      if (result) this.editTask(index, result);
-      console.log(result);
+      if (!result) return;
+      if (this.validateData(result)) {
+        this.editTask(index, result);
+        console.log(result);
+      }
+      else {
+        alert("Please fill in all fields");
+      }
     });
+
+
 
   }
 
@@ -81,9 +102,4 @@ export class TaskListComponent {
     priority: 'High',
     status: 'Complete'
   }];
-
-  deleteTask(index: number) {
-    this.taskList.splice(index, 1);
-  }
-
 }
