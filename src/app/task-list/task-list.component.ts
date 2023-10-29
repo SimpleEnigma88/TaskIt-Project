@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogOverviewExampleDialog } from '../dialog-overview-example-dialog/dialog-overview-example-dialog';
 import { DialogData } from './task.model';
 import Swal from 'sweetalert2';
+import { TaskService } from '../task.service';
+import { Task } from '../task.model';
 
 @Component({
   selector: 'app-task-list',
@@ -10,15 +12,23 @@ import Swal from 'sweetalert2';
   styleUrls: ['./task-list.component.css']
 })
 
-export class TaskListComponent {
+export class TaskListComponent implements OnInit {
   name: string;
   dueDate: Date;
   priority: string;
   status: string;
   isEdit: boolean = false;
   appTask: string = "Edit Task";
+  taskList: Task[];
 
-  constructor(public dialog: MatDialog) { }
+  selectedFilter: string;
+
+  constructor(public dialog: MatDialog,
+    private taskService: TaskService) { }
+
+  ngOnInit() {
+    this.taskList = this.taskService.getTasks();
+  }
 
   validateData(result) {
     if (result.name && result.dueDate && result.priority && result.status) {
@@ -93,25 +103,11 @@ export class TaskListComponent {
         alert("Please fill in all fields");
       }
     });
-
-
-
   }
 
-  taskList = [{
-    name: "Get Angular Project Started",
-    dueDate: new Date('10/1/2023'),
-    priority: 'High',
-    status: 'In Progress'
-  }, {
-    name: "Clean Carport",
-    dueDate: new Date('10/1/2023'),
-    priority: 'Low',
-    status: 'To Do'
-  }, {
-    name: "Get Oil Changed",
-    dueDate: new Date('10/1/2023'),
-    priority: 'High',
-    status: 'Complete'
-  }];
+  onFilterChange(filterType: string, filterName: string) {
+    this.selectedFilter = filterName;
+    this.taskService.getTasks(filterType, filterName);
+  }
+
 }

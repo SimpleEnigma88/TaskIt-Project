@@ -4,7 +4,7 @@
     <div class="align-self-center">
       <span style="margin-right: 5px;"><b>Filters:</b></span>
       <select class="form-select d-inline-flex" style="width:10%; min-width: 100px; margin-right: 5px;" name="status"
-          id="status">
+          id="status" [(ngModel)]="selectedFilter" (change)="onFilterChange('status', selectedFilter)">
         <option selected>Status</option>
         <option value="complete">Not Started</option>
         <option value="pending">Pending</option>
@@ -23,12 +23,13 @@
         <option value="low">Low</option>
       </select>
     </div>
-    <div class="ms-auto p-2"><button class="btn btn-success d-flex justify-content-end" (click)="openDialog()">Add New
-        Task</button></div>
+    <div class="ms-auto p-2"><button
+          class="btn btn-success d-flex justify-content-end"
+          (click)="openDialog()">Add New Task</button></div>
 
   </div>
   <div class="task-table">
-    <table class="table table-striped">
+    <table class="table table-hover">
       <thead>
         <tr>
           <th>Title</th>
@@ -38,16 +39,16 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody *ngFor="let task of taskList; let i = index;">
+      <tbody *ngFor="let task of taskList; let i = index; ">
         <tr>
           <td>{{ task.name }}</td>
           <td>{{ task.dueDate | date:'MM/dd/yyyy' }}</td>
           <td>{{ task.priority }}</td>
           <td>{{ task.status }}</td>
           <td>
-            <!-- <span class="material-symbols-outlined" style="margin-right: 5px;">
+            <span class="material-symbols-outlined" style="margin-right: 5px;">
               visibility
-            </span> -->
+            </span>
             <span class="material-symbols-outlined" style="margin-right: 5px;" (click)="editDialog(i)">
               edit_square
             </span>

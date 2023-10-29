@@ -1,0 +1,26 @@
+.card {
+  align-items: left;
+  margin: auto;
+  width: 85%;
+  min-width: 336px;
+  height: 150px;
+  margin-top: 33px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.cardColumns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.card-body {
+  background-color: whitesmoke;
+}
+
+.selectBox {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+}
