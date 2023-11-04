@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+
+import { Task } from '../task.model';
+import { TaskService } from '../task.service';
+import { LocalStorageService } from '../localStorage.service';
+
 import { MatDialog } from '@angular/material/dialog';
 import { DialogOverviewExampleDialog } from '../dialog-overview-example-dialog/dialog-overview-example-dialog';
 import { DialogData } from './task.model';
 import Swal from 'sweetalert2';
-import { TaskService } from '../task.service';
-import { Task } from '../task.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-task-list',
@@ -20,17 +24,15 @@ export class TaskListComponent implements OnInit {
   isEdit: boolean = false;
   appTask: string = "Edit Task";
   taskList: Task[];
+  tasksChangedSubscription: Subscription;
 
   selectedFilter: string;
 
   constructor(public dialog: MatDialog,
-    private taskService: TaskService) { }
+    private taskService: TaskService, private localStorage: LocalStorageService) { }
 
-  ngOnInit() {
-    this.taskList = this.taskService.getTasks();
-  }
 
-  validateData(result) {
+  validateData(result: { name: any; dueDate: any; priority: any; status: any; }) {
     if (result.name && result.dueDate && result.priority && result.status) {
       return true;
     } else {
@@ -38,8 +40,8 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  addTask(task) {
-    this.taskList.push(task);
+  addTask(task: Task) {
+    this.localStorage.saveTask(task);
   }
 
   editTask(index: number, result: DialogData) {
@@ -50,6 +52,7 @@ export class TaskListComponent implements OnInit {
       task.status = result.status;
       task.priority = result.priority;
     }
+    this.localStorage.updateTask(task);
   }
 
   deleteTask(index: number) {
@@ -64,7 +67,7 @@ export class TaskListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.taskList.splice(index, 1);
+        this.localStorage.deleteTask(this.taskList[index].name);
         Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
       }
     });
@@ -110,4 +113,22 @@ export class TaskListComponent implements OnInit {
     this.taskService.getTasks(filterType, filterName);
   }
 
+
+  ngOnInit() {
+    this.updateLists();
+    this.tasksChangedSubscription = this.taskService.tasksChanged.subscribe(
+      (tasks: Task[]) => {
+        this.taskList = tasks;
+      }
+    );
+    console.log(this.taskList);
+  }
+
+  updateLists() {
+    this.taskList = this.taskService.getTasks();
+  }
+
+  ngOnDestroy() {
+    this.tasksChangedSubscription.unsubscribe();
+  }
 }

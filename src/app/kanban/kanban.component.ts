@@ -23,12 +23,6 @@ export class KanbanComponent implements OnInit {
 
   updateLists() {
     this.tasks = this.taskService.getTasks();
-
-    /*     this.todoList = this.tasks.filter(task => task.status === 'To Do');
-
-        this.inProgList = this.tasks.filter(task => task.status === 'In Progress');
-
-        this.doneList = this.tasks.filter(task => task.status === 'Complete'); */
   }
 
 
