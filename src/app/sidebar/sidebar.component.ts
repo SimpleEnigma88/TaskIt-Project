@@ -16,7 +16,7 @@ export class SidebarComponent implements OnInit {
     private taskService: TaskService) { }
 
   ngOnInit() {
-    this.taskService.tasksChanged.subscribe(tasks => {
+    this.taskService.taskSubscription.subscribe(tasks => {
       this.taskList = tasks;
     });
   }

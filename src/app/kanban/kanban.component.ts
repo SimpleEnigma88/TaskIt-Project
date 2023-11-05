@@ -1,30 +1,29 @@
-import { Component, OnInit, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Task } from '../task.model';
+import { Subscription } from 'rxjs';
 import { TaskService } from '../task.service';
-import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-kanban',
   templateUrl: './kanban.component.html',
   styleUrls: ['./kanban.component.css']
 })
-export class KanbanComponent implements OnInit {
-  todoList: Task[];
-  inProgList: Task[];
-  doneList: Task[];
-  tasks: Task[];
+export class KanbanComponent implements OnInit, OnDestroy {
+  taskList: Task[];
+  private taskSub: Subscription;
 
-  constructor(private taskService: TaskService, private cdRef: ChangeDetectorRef, private router: Router,
-    private route: ActivatedRoute,) { }
+  constructor(private taskService: TaskService) { }
 
   ngOnInit() {
-    this.updateLists();
+    this.taskService.getTasksFromAPI();
+    this.taskSub = this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
+      this.taskList = tasks;
+    });
   }
 
-  updateLists() {
-    this.tasks = this.taskService.getTasks();
+  ngOnDestroy(): void {
+    /* if (this.taskService.taskSubscription && !this.taskService.taskSubscription.closed) {
+      this.taskSub.unsubscribe();
+    } */
   }
-
-
-
 }

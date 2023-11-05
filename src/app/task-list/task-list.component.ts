@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-
-import { Task } from '../task.model';
-import { TaskService } from '../task.service';
-import { LocalStorageService } from '../localStorage.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 import { DialogOverviewExampleDialog } from '../dialog-overview-example-dialog/dialog-overview-example-dialog';
+
+import { Task } from '../task.model';
 import { DialogData } from './task.model';
+import { TaskService } from '../task.service';
+
 import Swal from 'sweetalert2';
+
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,20 +17,19 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./task-list.component.css']
 })
 
-export class TaskListComponent implements OnInit {
+export class TaskListComponent implements OnInit, OnDestroy {
   name: string;
   dueDate: Date;
   priority: string;
   status: string;
   isEdit: boolean = false;
   appTask: string = "Edit Task";
-  taskList: Task[];
-  tasksChangedSubscription: Subscription;
-
+  taskList: Task[] = [];
+  private taskSubscription: Subscription;
   selectedFilter: string;
 
   constructor(public dialog: MatDialog,
-    private taskService: TaskService, private localStorage: LocalStorageService) { }
+    private taskService: TaskService) { }
 
 
   validateData(result: { name: any; dueDate: any; priority: any; status: any; }) {
@@ -41,7 +41,7 @@ export class TaskListComponent implements OnInit {
   }
 
   addTask(task: Task) {
-    this.localStorage.saveTask(task);
+    this.taskService.addTask(task);
   }
 
   editTask(index: number, result: DialogData) {
@@ -52,7 +52,7 @@ export class TaskListComponent implements OnInit {
       task.status = result.status;
       task.priority = result.priority;
     }
-    this.localStorage.updateTask(task);
+    this.taskService.updateTask(task);
   }
 
   deleteTask(index: number) {
@@ -67,7 +67,7 @@ export class TaskListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.localStorage.deleteTask(this.taskList[index].name);
+        this.taskService.deleteTask(this.taskList[index]);
         Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
       }
     });
@@ -93,42 +93,47 @@ export class TaskListComponent implements OnInit {
     this.isEdit = true;
     const editTask = this.taskList[index];
 
+    if (editTask) {
+      const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+        data: { name: editTask.name, dueDate: editTask.dueDate, priority: editTask.priority, status: editTask.status },
+      });
 
-    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-      data: { title: 'Edit Task', name: editTask.name, dueDate: editTask.dueDate, priority: editTask.priority, status: editTask.status },
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && this.validateData(result)) {
-        this.editTask(index, result);
-      }
-      else {
-        alert("Please fill in all fields");
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result && this.validateData(result)) {
+          this.editTask(index, result);
+        }
+        else {
+          alert("Please fill in all fields");
+        }
+      });
+    } else {
+      console.error(`No task at index ${index}`);
+    }
   }
 
   onFilterChange(filterType: string, filterName: string) {
     this.selectedFilter = filterName;
-    this.taskService.getTasks(filterType, filterName);
+    this.taskList = this.taskService.getTasks(filterType, filterName);
   }
 
 
-  ngOnInit() {
-    this.updateLists();
-    this.tasksChangedSubscription = this.taskService.tasksChanged.subscribe(
-      (tasks: Task[]) => {
-        this.taskList = tasks;
-      }
-    );
-    console.log(this.taskList);
-  }
 
   updateLists() {
     this.taskList = this.taskService.getTasks();
   }
 
-  ngOnDestroy() {
-    this.tasksChangedSubscription.unsubscribe();
+  ngOnInit() {
+    this.taskService.getTasksFromAPI();
+    this.taskSubscription = this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
+      this.taskList = tasks;
+    });
   }
+
+  ngOnDestroy(): void {
+    /* if (this.taskService.taskSubscription && !this.taskService.taskSubscription.closed) {
+      this.taskSubscription.unsubscribe();
+    } */
+  }
+
+
 }
