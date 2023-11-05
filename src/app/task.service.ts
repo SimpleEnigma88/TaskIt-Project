@@ -12,7 +12,7 @@ export class TaskService {
   dbUrl = 'https://taskit-a5bca-default-rtdb.firebaseio.com/';
 
   constructor(private http: HttpClient) {
-    this.getTasksFromAPI();
+    this.getTasksFromDB();
   }
 
   addTask(task: Task): void {
@@ -28,7 +28,7 @@ export class TaskService {
     });
   }
 
-  getTasksFromAPI(): void {
+  getTasksFromDB(): void {
     this.http.get(`${this.dbUrl}/data.json`).subscribe((tasks) => {
       console.log('getTasksFromAPI subscribe log: ', tasks);
       this.taskList = [];

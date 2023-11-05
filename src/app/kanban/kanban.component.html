@@ -16,7 +16,8 @@
                   <p class="card-text"><small class="text-muted">{{ task.dueDate | date }}</small></p>
                 </span>
                 <div class="form-group mb-0 selectBox">
-                  <select class="form-control" [(ngModel)]="task.status" style="width: 115px;">
+                  <select class="form-control" [(ngModel)]="task.status"
+                      (change)="onTaskStatusChange(task)" style="width: 115px;">
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Complete">Complete</option>
@@ -40,7 +41,8 @@
                   <p class="card-text"><small class="text-muted">{{ task.dueDate | date }}</small></p>
                 </span>
                 <div class="form-group mb-0 selectBox">
-                  <select class="form-control" [(ngModel)]="task.status" style="width: 115px;">
+                  <select class="form-control" [(ngModel)]="task.status"
+                      (change)="onTaskStatusChange(task)" style="width: 115px;">
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Complete">Complete</option>
@@ -65,6 +67,7 @@
                 </span>
                 <div class="form-group mb-0 selectBox">
                   <select class="form-control" [(ngModel)]="task.status"
+                      (change)="onTaskStatusChange(task)"
                       style="width: 115px;">
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>

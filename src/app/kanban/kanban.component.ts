@@ -15,10 +15,14 @@ export class KanbanComponent implements OnInit, OnDestroy {
   constructor(private taskService: TaskService) { }
 
   ngOnInit() {
-    this.taskService.getTasksFromAPI();
+    this.taskService.getTasksFromDB();
     this.taskSub = this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
       this.taskList = tasks;
     });
+  }
+
+  onTaskStatusChange(task: Task): void {
+    this.taskService.updateTask(task);
   }
 
   ngOnDestroy(): void {

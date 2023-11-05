@@ -2,3 +2,7 @@ span {
   margin: 5px;
   cursor: pointer;
 }
+
+.overdue {
+  background-color: salmon;
+}

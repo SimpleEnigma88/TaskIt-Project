@@ -31,6 +31,12 @@ export class TaskListComponent implements OnInit, OnDestroy {
   constructor(public dialog: MatDialog,
     private taskService: TaskService) { }
 
+  isOverdue(task: Task): boolean {
+    const today = new Date();
+    const dueDate = new Date(task.dueDate);
+    console.log(task, '  ', dueDate < today);
+    return dueDate < today;
+  }
 
   validateData(result: { name: any; dueDate: any; priority: any; status: any; }) {
     if (result.name && result.dueDate && result.priority && result.status) {
@@ -123,7 +129,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.taskService.getTasksFromAPI();
+    this.taskService.getTasksFromDB();
     this.taskSubscription = this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
       this.taskList = tasks;
     });
