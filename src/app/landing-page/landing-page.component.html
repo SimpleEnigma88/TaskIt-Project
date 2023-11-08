@@ -1,0 +1,29 @@
+<!-- Path: src/app/landing-page/landing-page.component.ts -->
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="text-center">Welcome to <b><span style="color:green;">TASK</span>IT</b></h1>
+      <br>
+      <p class="text-center" style="font-size:larger; font-weight: 600;">This platform allows you to keep track of tasks
+        professionally,
+        domestically, and more.
+        Sign up today to get to
+        work!</p>
+    </div>
+
+    <div class="col-md-12" *ngIf="formToShow === 'none'">
+      <img src="/assets/images/LandingPageImage.png" alt="LandingPageImage"
+          class="img-fluid mx-auto d-block">
+      <div class="text-center">
+        <button class="btn btn-success btn-lg" style="width: 150px;" (click)="showSignupForm()">Sign Up</button>
+        <span style="font-weight: 800; font-size: larger;"> or </span>
+        <button class="btn btn-success btn-lg" style="width: 150px;" (click)="showLoginForm()">Log In</button>
+      </div>
+    </div>
+
+    <app-signup-form *ngIf="formToShow === 'signup'"></app-signup-form>
+    <app-login-form *ngIf="formToShow === 'login'"></app-login-form>
+    <div class="col-md-12 text-center" *ngIf="formToShow !== 'none'">
+      <button class="btn btn-success btn-lg mt-1.5" style="width: 150px;" (click)="goBack()">Go Back</button>
+    </div>

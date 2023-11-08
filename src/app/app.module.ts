@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -20,6 +20,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { KanbanComponent } from './kanban/kanban.component';
 import { FilterPipe } from './filter.pipe';
 import { TaskService } from './task.service';
+import { LandingPageComponent } from './landing-page/landing-page.component';
+import { AppSignupFormComponent } from './app-signup-form/app-signup-form.component';
+import { AppLoginFormComponent } from './app-login-form/app-login-form.component';
 
 
 @NgModule({
@@ -30,6 +33,9 @@ import { TaskService } from './task.service';
     DialogOverviewExampleDialog,
     KanbanComponent,
     FilterPipe,
+    LandingPageComponent,
+    AppSignupFormComponent,
+    AppLoginFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,7 +50,7 @@ import { TaskService } from './task.service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [TaskService],
   bootstrap: [AppComponent]

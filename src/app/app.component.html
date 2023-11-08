@@ -1,6 +1,6 @@
 <div class="flex-container">
 
-  <aside class="sidebar flex-item-fixed">
+  <aside class="sidebar flex-item-fixed" *ngIf="!isLandingPage()">
     <app-sidebar></app-sidebar>
   </aside>
   <main class="main flex-item-grow">

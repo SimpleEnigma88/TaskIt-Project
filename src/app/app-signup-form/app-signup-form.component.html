@@ -1,0 +1,26 @@
+<div class="container">
+  <form #signUp="ngForm" (ngSubmit)="onSubmit(signUp)" class="form-style">
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email"
+          id="email"
+          name="email"
+          required class="form-control"
+          style="min-width: 325px;"
+          ngModel>
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password"
+          id="password"
+          name="password"
+          required class="form-control"
+          style="min-width: 325px;"
+          ngModel>
+    </div>
+    <button
+        type="submit"
+        class="btn btn-primary mt-3"
+        [disabled]="!signUp.form.valid">Sign Up</button>
+  </form>
+</div>

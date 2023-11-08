@@ -1,0 +1,15 @@
+.form-style {
+  margin: auto;
+  padding: 1em;
+  border: 1px solid #CCC;
+  border-radius: 1em;
+  justify-content: center;
+}
+
+.container {
+  width: 957px;
+  height: 683px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
