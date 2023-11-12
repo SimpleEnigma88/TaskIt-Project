@@ -12,7 +12,6 @@ import { Subscription } from 'rxjs';
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   taskList: Task[];
-  private userSub: Subscription;
   isAuthenticated = false;
 
   constructor(private router: Router,
@@ -43,7 +42,5 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
-  ngOnDestroy(): void {
-    this.userSub.unsubscribe();
-  }
+  ngOnDestroy(): void { }
 }

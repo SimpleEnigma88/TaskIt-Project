@@ -23,6 +23,7 @@ import { TaskService } from './task.service';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { AppSignupFormComponent } from './app-signup-form/app-signup-form.component';
 import { AppLoginFormComponent } from './app-login-form/app-login-form.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { AppLoginFormComponent } from './app-login-form/app-login-form.component
     MatNativeDateModule,
     MatSelectModule,
     AppRoutingModule,
+    MatSnackBarModule
   ],
   providers: [TaskService],
   bootstrap: [AppComponent]

@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from './environment';
-import { Subject, catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
 import { User } from './user.model';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface AuthResponseData {
   kind: string;
@@ -20,9 +22,9 @@ export interface AuthResponseData {
 
 export class AuthService {
   APIKey = environment.API_KEY;
-  user = new Subject<User>();
+  user = new BehaviorSubject<User>(null);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar) { }
 
   signup(email: string, password: string) {
     return this.http.post<AuthResponseData>(
@@ -32,7 +34,7 @@ export class AuthService {
       returnSecureToken: true
     })
       .pipe(
-        catchError(this.handleError),
+        catchError(this.handleError.bind(this)),
         tap(resData => {
           this.handleAuthentication(
             resData.email,
@@ -55,7 +57,7 @@ export class AuthService {
         }
       )
       .pipe(
-        catchError(this.handleError),
+        catchError(this.handleError.bind(this)),
         tap(resData => {
           this.handleAuthentication(
             resData.email,
@@ -75,16 +77,28 @@ export class AuthService {
     }
     switch (errorRes.error.error.message) {
       case 'EMAIL_EXISTS':
-        errorMessage = 'This email exists already';
+        errorMessage = 'This email already exists.';
+        break;
       case 'EMAIL_NOT_FOUND':
         errorMessage = 'This email does not exist.';
+        break;
       case 'INVALID_PASSWORD':
         errorMessage = 'This password is not correct.';
+        break;
       case 'USER_DISABLED':
         errorMessage = 'That account has been disabled.';
+        break;
+      case 'WEAK_PASSWORD : Password should be at least 6 characters':
+        errorMessage = 'Password must be at least 6 characters.';
+        break;
       case 'INVALID_LOGIN_CREDENTIALS':
         errorMessage = 'Invalid login credentials. Please try again.';
+        break;
     }
+    if (errorRes.error && errorRes.error.error) this.snackBar.open(errorMessage, 'Close', {
+      duration: 3500,
+      /* verticalPosition: 'top', */
+    });
     return throwError(errorMessage);
   }
 
@@ -107,5 +121,6 @@ export class AuthService {
 
   logout() {
     this.user.next(null);
+    this.router.navigate(['/landing-page']);
   }
 }

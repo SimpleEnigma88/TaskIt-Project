@@ -3,9 +3,11 @@ import { TaskListComponent } from './task-list/task-list.component';
 import { RouterModule, Routes } from '@angular/router';
 import { KanbanComponent } from './kanban/kanban.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { AppComponent } from './app.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
+  { path: 'app', component: AppComponent },
   { path: 'landing-page', component: LandingPageComponent },
   { path: 'task-list', component: TaskListComponent },
   { path: 'kanban', component: KanbanComponent },
