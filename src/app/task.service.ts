@@ -15,14 +15,21 @@ export class TaskService {
 
   private unsubscribe = new Subject<void>();
 
+  userToken = this.authService.user.getValue() ? this.authService.user.getValue().token : null;
+
   constructor(private http: HttpClient, private authService: AuthService) {
     if (this.userToken) this.getTasksFromDB();
   }
 
-  userToken = this.authService.user.getValue() ? this.authService.user.getValue().token : null;
 
   addTask(task: Task): void {
-    const taskToSend = { id: task.id, name: task.name, dueDate: task.dueDate, priority: task.priority, status: task.status };
+    const taskToSend = {
+      id: task.id,
+      name: task.name,
+      dueDate: task.dueDate,
+      priority: task.priority,
+      status: task.status
+    };
 
     this.taskList.push(taskToSend); // add task to local array
 
@@ -32,7 +39,7 @@ export class TaskService {
 
       .subscribe(response => { // push task to DB and subscribe to response
         if (!this.taskSubscription.closed) {
-          this.taskSubscription.next(this.taskList.slice()); // push task to local array
+          this.taskSubscription.next(this.taskList.slice()); // emit new array of tasks
         }
       }, error => {
         console.error(error);
@@ -40,10 +47,10 @@ export class TaskService {
   }
 
   getTasksFromDB(): void {
-    this.http.get(`${this.dbUrl}/data.json`, {
-      params: new HttpParams().set('auth', this.userToken)
-    })
+    this.http.get(`${this.dbUrl}/data.json`)
+
       .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
+
       .subscribe((tasks) => {
 
         this.taskList = [];
@@ -73,10 +80,10 @@ export class TaskService {
 
 
   updateTask(updatedTask: Task): void {
-    this.http.put(`${this.dbUrl}/data/${updatedTask.id}.json`, updatedTask, {
-      params: new HttpParams().set('auth', this.userToken)
-    })
+    this.http.put(`${this.dbUrl}/data/${updatedTask.id}.json`, updatedTask)
+
       .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
+
       .subscribe(() => {
         const index = this.taskList.findIndex(task => task.id === updatedTask.id);
         if (index !== -1) {
@@ -92,7 +99,9 @@ export class TaskService {
     const taskKey = taskToDelete.id;
     if (taskKey) {
       this.http.delete(`${this.dbUrl}/data/${taskKey}.json`)
+
         .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
+
         .subscribe(() => {
           const index = this.taskList.findIndex(task => task.id === taskToDelete.id);
           if (index !== -1) {

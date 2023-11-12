@@ -7,11 +7,14 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  isLandingPage = false;
 
-  constructor(private router: Router) { }
-
-  isLandingPage(): boolean {
-    console.log(this.router.url);
-    return this.router.url === '/landing-page';
+  constructor(private router: Router) {
+    this.router.events.subscribe({
+      next: (event) => {
+        // console.log(event);
+        this.isLandingPage = this.router.url === '/landing-page';
+      }
+    })
   }
 }

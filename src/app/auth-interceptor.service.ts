@@ -1,9 +1,33 @@
+import { HttpHandler, HttpInterceptor, HttpParams, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AuthService } from './auth.service';
+import { User } from './user.model';
+import { switchMap, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthInterceptorService {
+export class AuthInterceptorService implements HttpInterceptor {
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    console.log('Request is on its way');
+    return this.authService.user.pipe(
+      take(1),
+      switchMap(user => {
+        console.log(user);
+        if (!user) {
+          return next.handle(req);
+        }
+
+        const modifiedReq = req.clone({
+          params: new HttpParams().set('auth', user.token)
+        });
+
+        console.log(modifiedReq);
+        return next.handle(modifiedReq);
+      })
+    );
+  }
 }

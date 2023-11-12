@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from './environment';
-import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,12 +23,15 @@ export interface AuthResponseData {
 export class AuthService {
   APIKey = environment.API_KEY;
   user = new BehaviorSubject<User>(null);
+  signUpUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.APIKey}`;
+  logInUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.APIKey}`;
+
 
   constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar) { }
 
   signup(email: string, password: string) {
     return this.http.post<AuthResponseData>(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.APIKey}`, {
+      this.signUpUrl, {
       email: email,
       password: password,
       returnSecureToken: true
@@ -49,7 +52,7 @@ export class AuthService {
   login(email: string, password: string) {
     return this.http
       .post<AuthResponseData>(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.APIKey}`,
+        this.logInUrl,
         {
           email: email,
           password: password,
@@ -70,6 +73,7 @@ export class AuthService {
   }
 
   private handleError(errorRes: HttpErrorResponse) {
+    console.trace();
     console.log(errorRes);
     let errorMessage = 'An unknown error occurred!';
     if (!errorRes.error || !errorRes.error.error) {
@@ -97,7 +101,6 @@ export class AuthService {
     }
     if (errorRes.error && errorRes.error.error) this.snackBar.open(errorMessage, 'Close', {
       duration: 3500,
-      /* verticalPosition: 'top', */
     });
     return throwError(errorMessage);
   }
@@ -118,6 +121,15 @@ export class AuthService {
     );
     this.user.next(user);
   };
+
+  /*   initializeUser(): Observable<User> {
+      // Replace 'url' with the actual URL of your API
+      return this.http.get<User>(this.dbUrl).pipe( //need to change url
+        tap((user: User) => {
+          this.user.next(user);
+        })
+      );
+    } */
 
   logout() {
     this.user.next(null);

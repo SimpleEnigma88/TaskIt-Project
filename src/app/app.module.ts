@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 
 import { AppComponent } from './app.component';
@@ -24,6 +24,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 import { AppSignupFormComponent } from './app-signup-form/app-signup-form.component';
 import { AppLoginFormComponent } from './app-login-form/app-login-form.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthInterceptorService } from './auth-interceptor.service';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     AppRoutingModule,
     MatSnackBarModule
   ],
-  providers: [TaskService],
+  providers: [TaskService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

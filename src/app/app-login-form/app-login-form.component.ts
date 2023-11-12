@@ -26,14 +26,16 @@ export class AppLoginFormComponent {
 
     authObs = this.authService.login(email, password);
 
-    authObs.subscribe(
-      resData => {
+    authObs.subscribe({
+      next: resData => {
+        console.log(resData);
+
         this.router.navigate(['/task-list']);
       },
-      errorMessage => {
-        console.log(errorMessage);
+      error: errorMessage => {
+        console.error(errorMessage);
       }
-    );
+    });
 
     form.reset();
   };
@@ -42,3 +44,10 @@ export class AppLoginFormComponent {
     window.history.back();
   }
 }
+
+/* resData => {
+  this.router.navigate(['/task-list']);
+},
+  errorMessage => {
+    console.log(errorMessage);
+  } */
