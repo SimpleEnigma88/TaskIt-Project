@@ -4,7 +4,7 @@ import { environment } from './environment';
 import { Subject, catchError, tap, throwError } from 'rxjs';
 import { User } from './user.model';
 
-interface AuthResponseData {
+export interface AuthResponseData {
   kind: string;
   idToken: string;
   email: string;
@@ -17,9 +17,11 @@ interface AuthResponseData {
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthService {
-  user = new Subject<User>();
   APIKey = environment.API_KEY;
+  user = new Subject<User>();
+
   constructor(private http: HttpClient) { }
 
   signup(email: string, password: string) {
@@ -65,8 +67,8 @@ export class AuthService {
       );
   }
 
-
   private handleError(errorRes: HttpErrorResponse) {
+    console.log(errorRes);
     let errorMessage = 'An unknown error occurred!';
     if (!errorRes.error || !errorRes.error.error) {
       return throwError(errorMessage);
@@ -78,6 +80,10 @@ export class AuthService {
         errorMessage = 'This email does not exist.';
       case 'INVALID_PASSWORD':
         errorMessage = 'This password is not correct.';
+      case 'USER_DISABLED':
+        errorMessage = 'That account has been disabled.';
+      case 'INVALID_LOGIN_CREDENTIALS':
+        errorMessage = 'Invalid login credentials. Please try again.';
     }
     return throwError(errorMessage);
   }
@@ -98,4 +104,8 @@ export class AuthService {
     );
     this.user.next(user);
   };
+
+  logout() {
+    this.user.next(null);
+  }
 }
