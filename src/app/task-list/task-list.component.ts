@@ -122,7 +122,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskList = this.taskService.getTasks(filterType, filterName);
   }
 
-
+  getRandomTask() {
+    this.taskService.getRandomTask();
+  }
 
   updateLists() {
     this.taskList = this.taskService.getTasks();

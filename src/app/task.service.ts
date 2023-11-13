@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, takeUntil, tap } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { Task } from './task.model';
 import { HttpClient } from '@angular/common/http';
-import { AuthResponseData, AuthService } from './auth.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +61,35 @@ export class TaskService {
       });
   }
 
+  getRandomTask() {
+    return this.http.get('https://dummyjson.com/todos/random').subscribe({
+      next: (res) => {
+        const taskToSend = {
+          id: res['id'],
+          name: res['todo'],
+          dueDate: new Date(),
+          priority: 'Low',
+          status: 'To Do',
+        };
+        this.taskList.push(taskToSend);
+        this.http.post(`${this.dbUrl}/data.json`, taskToSend).subscribe({
+          next: () => this.taskSubscription.next(this.taskList.slice()),
+          error: error => {
+            console.error('POST request failed', error);
+          },
+          complete: () => {
+            console.log('POST request successful');
+          }
+        });
+      },
+      error: error => {
+        console.error('Random task subscription failed', error);
+      },
+      complete: () => {
+        console.log('Random task subscription complete');
+      }
+    });
+  }
 
   getTasksFromDB(): void {
     this.http.get(`${this.dbUrl}/data.json`)
@@ -76,7 +105,7 @@ export class TaskService {
               this.taskList.push(task);
             }
           }
-          // this.taskList = Array.isArray(tasks) ? tasks : [];
+
           this.taskSubscription.next(this.taskList.slice());
         },
         error: error => {
