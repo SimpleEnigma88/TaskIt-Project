@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Subject, exhaustMap, take, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { Task } from './task.model';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { AuthService } from './auth.service';
+import { HttpClient } from '@angular/common/http';
+import { AuthResponseData, AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +11,31 @@ export class TaskService {
   taskSubscription = new Subject<Task[]>();
   taskList: Task[] = [];
 
-  dbUrl = 'https://taskit-a5bca-default-rtdb.firebaseio.com/';
+  userId: string = null;
+
+  dbUrl = `https://taskit-a5bca-default-rtdb.firebaseio.com/${this.userId}`;
 
   private unsubscribe = new Subject<void>();
 
-  userToken = this.authService.user.getValue() ? this.authService.user.getValue().token : null;
-
   constructor(private http: HttpClient, private authService: AuthService) {
-    if (this.userToken) this.getTasksFromDB();
+    this.authService.user.subscribe({
+      next: user => {
+        if (user) {
+          this.userId = user.id;
+          this.dbUrl = `https://taskit-a5bca-default-rtdb.firebaseio.com/${this.userId}`;
+          this.getTasksFromDB();
+        }
+      },
+      error: error => {
+        console.error('Error subscribing to user', error);
+      },
+      complete: () => {
+        console.log('User subscription complete');
+      }
+    });
   }
 
-
-  addTask(task: Task): void {
+  addTask(task: Task) {
     const taskToSend = {
       id: task.id,
       name: task.name,
@@ -37,38 +50,44 @@ export class TaskService {
 
       .pipe(takeUntil(this.unsubscribe)) // takeUntil -- Use unsubscribe Subject to unsubscribe from multiple observables using the same pipe method. Gets the value of the Subject and unsubscribes from all observables when the Subject emits a value in ngOnDestroy().
 
-      .subscribe(response => { // push task to DB and subscribe to response
-        if (!this.taskSubscription.closed) {
-          this.taskSubscription.next(this.taskList.slice()); // emit new array of tasks
+      .subscribe({
+        next: () => this.taskSubscription.next(this.taskList.slice()), // emit new array of tasks
+        error: error => {
+          console.error('POST request failed', error);
+        },
+        complete: () => {
+          console.log('POST request successful');
         }
-      }, error => {
-        console.error(error);
       });
   }
+
 
   getTasksFromDB(): void {
     this.http.get(`${this.dbUrl}/data.json`)
-
-      .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
-
-      .subscribe((tasks) => {
-
-        this.taskList = [];
-
-        for (const key in tasks) {
-          if (tasks.hasOwnProperty(key)) {
-            const task = tasks[key];
-            task.id = key;
-            this.taskList.push(task);
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        next: (tasks) => {
+          console.log("FromDB: ", tasks);
+          this.taskList = [];
+          for (const key in tasks) {
+            if (tasks.hasOwnProperty(key)) {
+              const task = tasks[key];
+              task.id = key;
+              this.taskList.push(task);
+            }
           }
-        }
-        if (!this.taskSubscription.closed) {
+          // this.taskList = Array.isArray(tasks) ? tasks : [];
           this.taskSubscription.next(this.taskList.slice());
+        },
+        error: error => {
+          console.error('GET request failed', error);
+        },
+        complete: () => {
+          console.log('GET request successful');
         }
-      }, error => {
-        console.error(error);
       });
   }
+
 
   getTasks(filterType?: string, filterValue?: string): Task[] {
     let tasks = this.taskList.slice() ? this.taskList.slice() : [];
@@ -77,7 +96,6 @@ export class TaskService {
     }
     return tasks;
   }
-
 
   updateTask(updatedTask: Task): void {
     this.http.put(`${this.dbUrl}/data/${updatedTask.id}.json`, updatedTask)

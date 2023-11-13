@@ -12,11 +12,11 @@ export class AuthInterceptorService implements HttpInterceptor {
   constructor(private authService: AuthService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    console.log('Request is on its way');
+    //console.log('Request is on its way');
     return this.authService.user.pipe(
       take(1),
       switchMap(user => {
-        console.log(user);
+        //console.log(user);
         if (!user) {
           return next.handle(req);
         }
@@ -25,7 +25,7 @@ export class AuthInterceptorService implements HttpInterceptor {
           params: new HttpParams().set('auth', user.token)
         });
 
-        console.log(modifiedReq);
+        //console.log(modifiedReq);
         return next.handle(modifiedReq);
       })
     );

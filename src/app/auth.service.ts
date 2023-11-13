@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from './environment';
-import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -113,23 +113,13 @@ export class AuthService {
 
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
 
-    const user = new User(
+    this.user.next(new User(
       email,
       userId,
       token,
-      expirationDate
-    );
-    this.user.next(user);
+      expirationDate,
+    ));
   };
-
-  /*   initializeUser(): Observable<User> {
-      // Replace 'url' with the actual URL of your API
-      return this.http.get<User>(this.dbUrl).pipe( //need to change url
-        tap((user: User) => {
-          this.user.next(user);
-        })
-      );
-    } */
 
   logout() {
     this.user.next(null);

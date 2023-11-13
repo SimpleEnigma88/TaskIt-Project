@@ -12,7 +12,6 @@ export class AppComponent {
   constructor(private router: Router) {
     this.router.events.subscribe({
       next: (event) => {
-        // console.log(event);
         this.isLandingPage = this.router.url === '/landing-page';
       }
     })
