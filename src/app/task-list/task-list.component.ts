@@ -117,16 +117,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          this.taskService.deleteTask(this.taskList[index])
-            .subscribe((res) => {
-              console.log("Swal response: ", res);
-            }); // wait for deleteTask to complete before showing success message
-          Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
-        } catch (error) {
-          // handle error
-          console.log("Swal error: ", error);
-        }
+        this.taskService.deleteTask(this.taskList[index]);
+        Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
       }
     });
   }

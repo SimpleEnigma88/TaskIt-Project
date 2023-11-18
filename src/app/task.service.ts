@@ -165,29 +165,34 @@ export class TaskService {
       });
   }
 
-  OLDdeleteTask(task: Task): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
-        .toPromise()
-        .then(response => {
-          const index = this.taskList.indexOf(task);
-          if (index > -1) {
-            this.taskList.splice(index, 1); // remove task from local array only after successful DELETE
+  deleteTask(taskToDelete: Task): void {
+    const taskKey = taskToDelete.id;
+    if (taskKey) {
+      this.http.delete(`${this.dbUrl}/data/${taskKey}.json`)
+
+        .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
+
+        .subscribe(() => {
+          const index = this.taskList.findIndex(task => task.id === taskToDelete.id);
+          if (index !== -1) {
+            this.taskList.splice(index, 1);
+            this.taskSubscription.next(this.taskList.slice());
           }
-          resolve(response);
-        })
-        .catch(error => {
-          reject(error);
+        }, error => {
+          console.error('DELETE request failed', error);
         });
-    });
+    } else {
+      console.error('Task not found');
+    }
   }
 
-  deleteTask(task: Task) {
-    console.log("Delete task: ", task);
-    return this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
-
-
-  }
+  /*   deleteTask(task: Task) {
+  
+      console.log("Delete task: ", task);
+      return this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
+  
+  
+    } */
 
   ngOnDestroy(): void {
     this.unsubscribe.next(); // Subject emits a value, which triggers the takeUntil operator to unsubscribe from all observables the pipe method is applied to.
