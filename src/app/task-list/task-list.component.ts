@@ -37,7 +37,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
   isOverdue(task: Task): boolean {
     const today = new Date();
     const dueDate = new Date(task.dueDate);
-    console.log(task, '  ', dueDate < today);
     return dueDate < today;
   }
 
@@ -174,7 +173,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.updateLists();
-    console.log("OnInit: ", this.taskList);
 
     this.taskSubscription = this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
       this.taskList = tasks;

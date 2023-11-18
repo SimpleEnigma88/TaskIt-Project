@@ -18,13 +18,11 @@ export class AppSignupFormComponent {
       return;
     }
     const email = form.value.email;
-    console.log(email);
 
     const password = form.value.password;
 
     this.authService.signup(email, password).subscribe(
       response => {
-        console.log(response);
         this.router.navigate(['/task-list']);
       },
       error => {

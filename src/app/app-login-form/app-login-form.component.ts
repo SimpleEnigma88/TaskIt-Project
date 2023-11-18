@@ -28,7 +28,6 @@ export class AppLoginFormComponent {
 
     authObs.subscribe({
       next: resData => {
-        //console.log(resData);
 
         this.router.navigate(['/task-list']);
       },

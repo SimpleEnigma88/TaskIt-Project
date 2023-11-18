@@ -16,18 +16,15 @@ export class KanbanComponent implements OnInit {
   constructor(private taskService: TaskService) { }
 
   ngOnInit() {
-    console.log("Before: ", this.taskList);
     this.taskList = this.taskService.getTasks();
     this.taskSub = this.taskService.taskSubscription.subscribe({
       next: (tasks) => {
         this.taskList = tasks;
-        console.log("During: ", this.taskList);
       },
       error: error => {
         console.error('Error subscribing to tasks', error);
       },
       complete: () => {
-        console.log('Task subscription complete');
       }
     });
   }
@@ -53,7 +50,6 @@ export class KanbanComponent implements OnInit {
     }
   }
   onTaskStatusChange(task: Task): void {
-    console.log(`Status of task ${task.id} changed to ${task.status}`);
     this.taskService.updateTask(task);
   }
 }

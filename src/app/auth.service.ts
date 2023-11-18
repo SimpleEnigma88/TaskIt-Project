@@ -73,8 +73,6 @@ export class AuthService {
   }
 
   private handleError(errorRes: HttpErrorResponse) {
-    console.trace();
-    console.log(errorRes);
     let errorMessage = 'An unknown error occurred!';
     if (!errorRes.error || !errorRes.error.error) {
       return throwError(errorMessage);
@@ -112,6 +110,10 @@ export class AuthService {
     expiresIn: number) {
 
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
+    const lsUser = new User(email, userId, token, expirationDate);
+
+
+    localStorage.setItem('userData', JSON.stringify(lsUser));
 
     this.user.next(new User(
       email,
@@ -121,8 +123,39 @@ export class AuthService {
     ));
   };
 
+  autoLogin() {
+
+    const userData: {
+      email: string;
+      id: string;
+      _token: string;
+      _tokenExpirationDate: string;
+    } = JSON.parse(localStorage.getItem('userData'));
+
+    if (!userData) {
+
+      return;
+    }
+
+
+    const loadedUser = new User(
+      userData.email,
+      userData.id,
+      userData._token,
+      new Date(userData._tokenExpirationDate)
+    );
+
+
+    if (loadedUser.token) {
+      this.user.next(loadedUser);
+      this.router.navigate(['/task-list']);
+    }
+
+  }
+
   logout() {
     this.user.next(null);
+    localStorage.removeItem('userData');
     this.router.navigate(['/landing-page']);
   }
 }

@@ -30,7 +30,6 @@ export class TaskService {
         console.error('Error subscribing to user', error);
       },
       complete: () => {
-        console.log('User subscription complete');
       }
     });
   }
@@ -48,8 +47,6 @@ export class TaskService {
         .toPromise()
         .then(response => {
           this.getTasksFromDB(); // add task to local array only after successful POST
-          console.log('Task added', taskToSend);
-          console.log('Updated task list', this.taskList);
           resolve(response);
         })
         .catch(error => {
@@ -68,15 +65,13 @@ export class TaskService {
       .subscribe({
         next: () => {
           this.getTasksFromDB(); // add task to local array only after successful PUT
-          console.log('Task updated', updatedTask);
-          console.log('Updated task list', this.taskList);
           this.taskSubscription.next(this.taskList.slice());
         },
         error: error => {
           console.error('PUT request failed', error);
         },
         complete: () => {
-          console.log('PUT request successful');
+
         }
       });
   }
@@ -100,7 +95,6 @@ export class TaskService {
             console.error('DELETE request failed', error);
           },
           complete: () => {
-            console.log('DELETE request successful');
           }
         });
     } else {
@@ -136,7 +130,6 @@ export class TaskService {
             console.error('POST request failed', error);
           },
           complete: () => {
-            console.log('POST request successful');
           }
         });
       },
@@ -144,7 +137,6 @@ export class TaskService {
         console.error('Random task subscription failed', error);
       },
       complete: () => {
-        console.log('Random task subscription complete');
       }
     });
   }
@@ -154,7 +146,6 @@ export class TaskService {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: (tasks) => {
-          console.log("FromDB: ", tasks);
           this.taskList = [];
           for (const key in tasks) {
             if (tasks.hasOwnProperty(key)) {
@@ -170,7 +161,6 @@ export class TaskService {
           console.error('GET request failed', error);
         },
         complete: () => {
-          console.log('GET request successful');
         }
       });
   }
@@ -203,11 +193,8 @@ export class TaskService {
   getTasks(filterType?: string, filterValue?: string): Task[] {
     let tasks = this.taskList.slice() ? this.taskList.slice() : [];
     if (filterType && filterValue) {
-      console.log("Filter type: ", filterType);
-      console.log("Filter value: ", filterValue);
 
       tasks = tasks.filter(task => task[filterType] === filterValue);
-      console.log("Filtered tasks: ", tasks);
     }
     return tasks;
   }
