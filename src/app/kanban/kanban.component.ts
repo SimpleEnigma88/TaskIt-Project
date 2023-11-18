@@ -11,6 +11,7 @@ import { TaskService } from '../task.service';
 export class KanbanComponent implements OnInit {
   taskList: Task[];
   private taskSub: Subscription;
+  draggedTask: Task;
 
   constructor(private taskService: TaskService) { }
 
@@ -31,6 +32,26 @@ export class KanbanComponent implements OnInit {
     });
   }
 
+  dragOver(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  dragStart(event: DragEvent, task: Task) {
+    this.draggedTask = task;
+    event.dataTransfer.setData('text/plain', task.id);
+  }
+
+  dragEnd(event: DragEvent) {
+    this.draggedTask = null;
+  }
+
+  drop(event: DragEvent, status: string) {
+    event.preventDefault();
+    if (this.draggedTask) {
+      this.draggedTask.status = status;
+      this.taskService.updateTask(this.draggedTask);
+    }
+  }
   onTaskStatusChange(task: Task): void {
     console.log(`Status of task ${task.id} changed to ${task.status}`);
     this.taskService.updateTask(task);
