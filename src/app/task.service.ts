@@ -47,7 +47,9 @@ export class TaskService {
       this.http.post(`${this.dbUrl}/data.json`, taskToSend)
         .toPromise()
         .then(response => {
-          this.taskList.push(taskToSend); // add task to local array only after successful POST
+          this.getTasksFromDB(); // add task to local array only after successful POST
+          console.log('Task added', taskToSend);
+          console.log('Updated task list', this.taskList);
           resolve(response);
         })
         .catch(error => {
@@ -56,19 +58,80 @@ export class TaskService {
     });
   }
 
+  updateTask(updatedTask: Task): void {
+    let taskID: string = updatedTask.id;
+    delete updatedTask.id; // remove id property from task object to prevent it from being sent to the DB
+    this.http.put(`${this.dbUrl}/data/${taskID}.json`, updatedTask)
+
+      .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
+
+      .subscribe({
+        next: () => {
+          this.getTasksFromDB(); // add task to local array only after successful PUT
+          console.log('Task updated', updatedTask);
+          console.log('Updated task list', this.taskList);
+          this.taskSubscription.next(this.taskList.slice());
+        },
+        error: error => {
+          console.error('PUT request failed', error);
+        },
+        complete: () => {
+          console.log('PUT request successful');
+        }
+      });
+  }
+
+  deleteTask(taskToDelete: Task): void {
+    const taskKey = taskToDelete.id;
+    if (taskKey) {
+      this.http.delete(`${this.dbUrl}/data/${taskKey}.json`)
+
+        .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
+
+        .subscribe({
+          next: () => {
+            const index = this.taskList.findIndex(task => task.id === taskToDelete.id);
+            if (index !== -1) {
+              this.getTasksFromDB();
+              this.taskSubscription.next(this.taskList.slice());
+            }
+          },
+          error: error => {
+            console.error('DELETE request failed', error);
+          },
+          complete: () => {
+            console.log('DELETE request successful');
+          }
+        });
+    } else {
+      console.error('Task not found');
+    }
+  }
+
+  /* () => {
+    const index = this.taskList.findIndex(task => task.id === taskToDelete.id);
+    if (index !== -1) {
+      this.getTasksFromDB();
+      this.taskSubscription.next(this.taskList.slice());
+    }
+  }, error => {
+    console.error('DELETE request failed', error);
+  } */
+
   getRandomTask() {
     return this.http.get('https://dummyjson.com/todos/random').subscribe({
       next: (res) => {
         const taskToSend = {
-          id: res['id'],
           name: res['todo'],
           dueDate: new Date(),
           priority: 'Low',
           status: 'To Do',
         };
-        this.taskList.push(taskToSend);
         this.http.post(`${this.dbUrl}/data.json`, taskToSend).subscribe({
-          next: () => this.taskSubscription.next(this.taskList.slice()),
+          next: () => {
+            this.getTasksFromDB(); // add task to local array only after successful POST
+            this.taskSubscription.next(this.taskList.slice());
+          },
           error: error => {
             console.error('POST request failed', error);
           },
@@ -149,54 +212,8 @@ export class TaskService {
     return tasks;
   }
 
-  updateTask(updatedTask: Task): void {
-    this.http.put(`${this.dbUrl}/data/${updatedTask.id}.json`, updatedTask)
-
-      .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
-
-      .subscribe(() => {
-        const index = this.taskList.findIndex(task => task.id === updatedTask.id);
-        if (index !== -1) {
-          this.taskList[index] = updatedTask;
-          this.taskSubscription.next(this.taskList.slice());
-        }
-      }, error => {
-        console.error('PUT request failed', error);
-      });
-  }
-
-  deleteTask(taskToDelete: Task): void {
-    const taskKey = taskToDelete.id;
-    if (taskKey) {
-      this.http.delete(`${this.dbUrl}/data/${taskKey}.json`)
-
-        .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
-
-        .subscribe(() => {
-          const index = this.taskList.findIndex(task => task.id === taskToDelete.id);
-          if (index !== -1) {
-            this.taskList.splice(index, 1);
-            this.taskSubscription.next(this.taskList.slice());
-          }
-        }, error => {
-          console.error('DELETE request failed', error);
-        });
-    } else {
-      console.error('Task not found');
-    }
-  }
-
-  /*   deleteTask(task: Task) {
-  
-      console.log("Delete task: ", task);
-      return this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
-  
-  
-    } */
-
   ngOnDestroy(): void {
     this.unsubscribe.next(); // Subject emits a value, which triggers the takeUntil operator to unsubscribe from all observables the pipe method is applied to.
     this.unsubscribe.complete(); // Subject completes, ending it's own sub.
   }
 }
-// Path: src/app/task-list/task-list.component.ts
