@@ -7,6 +7,8 @@ import { Task } from '../task.model';
 import { DialogData } from './task.model';
 import { TaskService } from '../task.service';
 
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 import Swal from 'sweetalert2';
 
 import { Subscription } from 'rxjs';
@@ -32,7 +34,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   constructor(public dialog: MatDialog,
     private taskService: TaskService,
-    private changeDetect: ChangeDetectorRef) { }
+    private changeDetect: ChangeDetectorRef,
+    private snackBar: MatSnackBar) { }
 
   isOverdue(task: Task): boolean {
     const today = new Date();
@@ -89,7 +92,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskService.addTask(task);
   }
 
-  editTask(index: number, result: DialogData) {
+  // async function awaits the result of the addTask function before updating the task, to prevent duplicate tasks entries in database.
+  async editTask(index: number, result: DialogData) {
     const task = this.taskList[index];
     if (task) {
       task.name = result.name;
@@ -97,10 +101,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
       task.status = result.status;
       task.priority = result.priority;
     }
-    this.taskService.updateTask(task);
+    try {
+      await this.taskService.addTask(task); // wait for addTask to complete before updating
+      this.taskService.updateTask(task);
+    } catch (error) {
+      // handle error
+    }
   }
 
-  deleteTask(index: number) {
+  async deleteTask(index: number) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to undo this!",
@@ -110,10 +119,16 @@ export class TaskListComponent implements OnInit, OnDestroy {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        this.taskService.deleteTask(this.taskList[index]);
-        Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
+        try {
+          await this.taskService.deleteTask(this.taskList[index]); // wait for deleteTask to complete before showing success message
+          this.snackBar.open('Your task has been deleted.', '', {
+            duration: 2000, // Snackbar will be visible for 2 seconds
+          });
+        } catch (error) {
+          // handle error
+        }
       }
     });
   }

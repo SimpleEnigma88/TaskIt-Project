@@ -35,7 +35,7 @@ export class TaskService {
     });
   }
 
-  addTask(task: Task) {
+  addTask(task: Task): Promise<any> {
     const taskToSend = {
       id: task.id,
       name: task.name,
@@ -43,22 +43,17 @@ export class TaskService {
       priority: task.priority,
       status: task.status
     };
-
-    this.taskList.push(taskToSend); // add task to local array
-
-    this.http.post(`${this.dbUrl}/data.json`, taskToSend)
-
-      .pipe(takeUntil(this.unsubscribe)) // takeUntil -- Use unsubscribe Subject to unsubscribe from multiple observables using the same pipe method. Gets the value of the Subject and unsubscribes from all observables when the Subject emits a value in ngOnDestroy().
-
-      .subscribe({
-        next: () => this.taskSubscription.next(this.taskList.slice()), // emit new array of tasks
-        error: error => {
-          console.error('POST request failed', error);
-        },
-        complete: () => {
-          console.log('POST request successful');
-        }
-      });
+    return new Promise((resolve, reject) => {
+      this.http.post(`${this.dbUrl}/data.json`, taskToSend)
+        .toPromise()
+        .then(response => {
+          this.taskList.push(taskToSend); // add task to local array only after successful POST
+          resolve(response);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   }
 
   getRandomTask() {
@@ -170,25 +165,21 @@ export class TaskService {
       });
   }
 
-  deleteTask(taskToDelete: Task): void {
-    const taskKey = taskToDelete.id;
-    if (taskKey) {
-      this.http.delete(`${this.dbUrl}/data/${taskKey}.json`)
-
-        .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
-
-        .subscribe(() => {
-          const index = this.taskList.findIndex(task => task.id === taskToDelete.id);
-          if (index !== -1) {
-            this.taskList.splice(index, 1);
-            this.taskSubscription.next(this.taskList.slice());
+  deleteTask(task: Task): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
+        .toPromise()
+        .then(response => {
+          const index = this.taskList.indexOf(task);
+          if (index > -1) {
+            this.taskList.splice(index, 1); // remove task from local array only after successful DELETE
           }
-        }, error => {
-          console.error('DELETE request failed', error);
+          resolve(response);
+        })
+        .catch(error => {
+          reject(error);
         });
-    } else {
-      console.error('Task not found');
-    }
+    });
   }
 
   ngOnDestroy(): void {
