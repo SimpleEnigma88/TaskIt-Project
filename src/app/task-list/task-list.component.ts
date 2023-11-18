@@ -7,8 +7,6 @@ import { Task } from '../task.model';
 import { DialogData } from './task.model';
 import { TaskService } from '../task.service';
 
-import { MatSnackBar } from '@angular/material/snack-bar';
-
 import Swal from 'sweetalert2';
 
 import { Subscription } from 'rxjs';
@@ -34,8 +32,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   constructor(public dialog: MatDialog,
     private taskService: TaskService,
-    private changeDetect: ChangeDetectorRef,
-    private snackBar: MatSnackBar) { }
+    private changeDetect: ChangeDetectorRef) { }
 
   isOverdue(task: Task): boolean {
     const today = new Date();
@@ -123,9 +120,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
       if (result.isConfirmed) {
         try {
           await this.taskService.deleteTask(this.taskList[index]); // wait for deleteTask to complete before showing success message
-          this.snackBar.open('Your task has been deleted.', '', {
-            duration: 2000, // Snackbar will be visible for 2 seconds
-          });
+          Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
         } catch (error) {
           // handle error
         }
