@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { Task } from './task.model';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
@@ -182,9 +182,9 @@ export class TaskService {
     });
   }
 
-  deleteTask(task: Task): void {
-    this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
-      .subscribe();
+  deleteTask(task: Task) {
+    return this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
+
 
   }
 
