@@ -119,7 +119,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await this.taskService.deleteTask(this.taskList[index]); // wait for deleteTask to complete before showing success message
+          await this.taskService.deleteTask(this.taskList[index])
+            .subscribe(); // wait for deleteTask to complete before showing success message
           Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
         } catch (error) {
           // handle error
