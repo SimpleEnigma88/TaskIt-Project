@@ -125,6 +125,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
           Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
         } catch (error) {
           // handle error
+          console.log("Swal error: ", error);
         }
       }
     });

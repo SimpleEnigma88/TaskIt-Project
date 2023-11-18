@@ -183,6 +183,7 @@ export class TaskService {
   }
 
   deleteTask(task: Task) {
+    console.log("Delete task: ", task);
     return this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
 
 
