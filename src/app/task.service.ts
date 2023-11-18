@@ -165,7 +165,7 @@ export class TaskService {
       });
   }
 
-  deleteTask(task: Task): Promise<any> {
+  OLDdeleteTask(task: Task): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
         .toPromise()
@@ -180,6 +180,11 @@ export class TaskService {
           reject(error);
         });
     });
+  }
+
+  deleteTask(task: Task): void {
+    this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
+
   }
 
   ngOnDestroy(): void {
