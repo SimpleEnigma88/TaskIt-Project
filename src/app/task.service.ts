@@ -184,6 +184,7 @@ export class TaskService {
 
   deleteTask(task: Task): void {
     this.http.delete(`${this.dbUrl}/data.json/${task.id}`)
+      .subscribe();
 
   }
 
