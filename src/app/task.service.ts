@@ -117,11 +117,39 @@ export class TaskService {
       });
   }
 
+  sortTasksByDate(order: string): Task[] {
+    let tasks = [...this.taskList];
+    tasks.sort((a, b) => {
+      if (order === 'Newest') {
+        return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+      } else {
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      }
+    });
+    return tasks;
+  }
+
+  sortTasksByPriority(order: string): Task[] {
+    let tasks = [...this.taskList];
+    tasks.sort((a, b) => {
+      const priorityOrder = ['Low', 'Medium', 'High'];
+      if (order === 'High') {
+        return priorityOrder.indexOf(b.priority) - priorityOrder.indexOf(a.priority);
+      } else {
+        return priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority);
+      }
+    });
+    return tasks;
+  }
 
   getTasks(filterType?: string, filterValue?: string): Task[] {
     let tasks = this.taskList.slice() ? this.taskList.slice() : [];
     if (filterType && filterValue) {
+      console.log("Filter type: ", filterType);
+      console.log("Filter value: ", filterValue);
+
       tasks = tasks.filter(task => task[filterType] === filterValue);
+      console.log("Filtered tasks: ", tasks);
     }
     return tasks;
   }

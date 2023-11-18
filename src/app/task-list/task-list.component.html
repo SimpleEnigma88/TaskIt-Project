@@ -1,27 +1,32 @@
 <div class="flex-container container" style="padding: 50px 25px 0 25px">
   <h1>Task List</h1>
   <div class="d-flex">
-    <div class="align-self-center">
+    <div class="d-flex align-self-center">
       <span style="margin-right: 5px;"><b>Filters:</b></span>
       <select class="form-select d-inline-flex" style="width:10%; min-width: 125px; margin-right: 5px;" name="status"
-          id="status" [(ngModel)]="selectedFilter" (change)="onFilterChange('status', selectedFilter)">
+          id="status" [(ngModel)]="selectedStatus" (change)="onFilterChange('status', selectedStatus)">
         <option selected>Status</option>
-        <option value="complete">Not Started</option>
-        <option value="pending">Pending</option>
-        <option value="not-started">Completed</option>
+        <option value="To Do">To Do</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Complete">Complete</option>
       </select>
-      <select class="form-select d-inline-flex" style="width:10%; min-width: 85px; margin-right: 5px;" name="sort"
-          id="sort">
+      <select class="form-select d-inline-flex" style="width:10%; min-width: 85px; margin-right: 5px;" name="date"
+          id="date" [(ngModel)]="selectedDate" (change)="onFilterChange('Date', selectedDate)">
         <option selected>Date</option>
-        <option value="date">Newest</option>
-        <option value="priority">Oldest</option>
+        <option value="Newest">Newest</option>
+        <option value="Oldest">Oldest</option>
       </select>
-      <select class="form-select d-inline-flex" style="width:10%; min-width: 105px" name="priority" id="priority">
+      <select class="form-select d-inline-flex" style="width:10%; min-width: 105px" name="priority" id="priority"
+          [(ngModel)]="selectedPriority" (change)="onFilterChange('Priority', selectedPriority)">
         <option selected>Priority</option>
-        <option value="high">High</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
+        <option value="High">High</option>
+        <option value="Low">Low</option>
       </select>
+      <span class="d-flex justify-content-center align-items-center">
+        <span class="material-symbols-outlined reset-icon" (click)="clearFilters()">
+          restart_alt
+        </span>
+      </span>
     </div>
     <div class="d-flex ms-auto p-2">
       <button class="btn btn-success d-flex justify-content-end" style="margin-right: 8px;" (click)="openDialog()">Add

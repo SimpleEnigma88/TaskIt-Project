@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 import { DialogOverviewExampleDialog } from '../dialog-overview-example-dialog/dialog-overview-example-dialog';
@@ -26,16 +26,55 @@ export class TaskListComponent implements OnInit, OnDestroy {
   appTask: string = "Edit Task";
   taskList: Task[] = [];
   private taskSubscription: Subscription;
-  selectedFilter: string;
+  selectedStatus = 'Status';
+  selectedDate = 'Date';
+  selectedPriority = 'Priority';
 
   constructor(public dialog: MatDialog,
-    private taskService: TaskService) { }
+    private taskService: TaskService,
+    private changeDetect: ChangeDetectorRef) { }
 
   isOverdue(task: Task): boolean {
     const today = new Date();
     const dueDate = new Date(task.dueDate);
     console.log(task, '  ', dueDate < today);
     return dueDate < today;
+  }
+
+  onFilterChange(filterType: string, filterName: string) {
+    switch (filterType) {
+      case 'Date':
+        this.selectedStatus = 'Status';
+        this.selectedPriority = 'Priority';
+        break;
+      case 'Priority':
+        this.selectedStatus = 'Status';
+        this.selectedDate = 'Date';
+        break;
+      default: // 'Status'
+        this.selectedDate = 'Date';
+        this.selectedPriority = 'Priority';
+        break;
+    }
+
+    if (filterType === 'Date') {
+      this.taskList = this.taskService.sortTasksByDate(filterName);
+    } else if (filterType === 'Priority') {
+      this.taskList = this.taskService.sortTasksByPriority(filterName);
+    } else {
+      this.taskList = this.taskService.getTasks(filterType, filterName);
+    }
+    this.changeDetect.detectChanges();
+  }
+
+  clearFilters() {
+    // Set select options to default values
+    this.selectedStatus = 'Status';
+    this.selectedDate = 'Date';
+    this.selectedPriority = 'Priority';
+
+    // Reload task list with no filters
+    this.taskList = this.taskService.getTasks();
   }
 
   validateData(result: { name: any; dueDate: any; priority: any; status: any; }) {
@@ -87,6 +126,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result && this.validateData(result)) {
         this.addTask(result);
+        this.clearFilters();
       }
       else {
         alert("Please fill in all fields");
@@ -117,13 +157,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFilterChange(filterType: string, filterName: string) {
-    this.selectedFilter = filterName;
-    this.taskList = this.taskService.getTasks(filterType, filterName);
-  }
 
   getRandomTask() {
     this.taskService.getRandomTask();
+    this.clearFilters();
   }
 
   updateLists() {
