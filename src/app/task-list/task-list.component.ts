@@ -89,8 +89,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskService.addTask(task);
   }
 
-  // async function awaits the result of the addTask function before updating the task, to prevent duplicate tasks entries in database.
-  async editTask(index: number, result: DialogData) {
+
+  editTask(index: number, result: DialogData) {
     const task = this.taskList[index];
     if (task) {
       task.name = result.name;
@@ -99,14 +99,13 @@ export class TaskListComponent implements OnInit, OnDestroy {
       task.priority = result.priority;
     }
     try {
-      await this.taskService.addTask(task); // wait for addTask to complete before updating
       this.taskService.updateTask(task);
     } catch (error) {
       // handle error
     }
   }
 
-  async deleteTask(index: number) {
+  deleteTask(index: number) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to undo this!",
@@ -116,11 +115,13 @@ export class TaskListComponent implements OnInit, OnDestroy {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
         try {
-          await this.taskService.deleteTask(this.taskList[index])
-            .subscribe(); // wait for deleteTask to complete before showing success message
+          this.taskService.deleteTask(this.taskList[index])
+            .subscribe((res) => {
+              console.log("Swal response: ", res);
+            }); // wait for deleteTask to complete before showing success message
           Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
         } catch (error) {
           // handle error
