@@ -32,6 +32,48 @@ export class TaskListComponent implements OnInit, OnDestroy {
   selectedPriority = 'Priority';
   page = 1;
   pageSize = 10;
+  isTitleSorted = false;
+  isPrioritySorted = false;
+  isStatusSorted = false;
+  isDateSorted = false;
+  isDueDateAscending = false;
+  isPriorityAscending = false;
+  isStatusAscending = false;
+  isNameAscending = false;
+
+  onSortChange(sortType: string) {
+    switch (sortType) {
+      case 'name':
+        console.log('Title');
+        this.isTitleSorted = true;
+        this.isPrioritySorted = false;
+        this.isStatusSorted = false;
+        this.isDateSorted = false;
+        break;
+      case 'priority':
+        console.log('Priority');
+        this.isTitleSorted = false;
+        this.isPrioritySorted = true;
+        this.isStatusSorted = false;
+        this.isDateSorted = false;
+        break;
+      case 'status':
+        console.log('Status');
+        this.isTitleSorted = false;
+        this.isPrioritySorted = false;
+        this.isStatusSorted = true;
+        this.isDateSorted = false;
+        break;
+      default: // 'Date'
+        console.log('Date');
+        this.isTitleSorted = false;
+        this.isPrioritySorted = false;
+        this.isStatusSorted = false;
+        this.isDateSorted = true;
+        break;
+    }
+  }
+
 
   constructor(public dialog: MatDialog,
     private taskService: TaskService,
@@ -197,6 +239,30 @@ export class TaskListComponent implements OnInit, OnDestroy {
       }
     });
     this.sortOrder[key] = !order;
+    this.switchAscendingSort(key);
+    this.onSortChange(key);
+  }
+
+  /**
+   * Switches the ascending sort order for the specified key.
+   *
+   * @param key - The key to determine which sort order to switch.
+   */
+  switchAscendingSort(key: string) {
+    switch (key) {
+      case 'name':
+        this.isNameAscending = !this.isNameAscending;
+        break;
+      case 'priority':
+        this.isPriorityAscending = !this.isPriorityAscending;
+        break;
+      case 'status':
+        this.isStatusAscending = !this.isStatusAscending;
+        break;
+      default: // 'dueDate'
+        this.isDueDateAscending = !this.isDueDateAscending;
+        break;
+    }
   }
 
   ngOnInit() {

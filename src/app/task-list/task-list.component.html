@@ -26,10 +26,54 @@
     <table class="table">
       <thead>
         <tr>
-          <th (click)="sortTasks('name')">Title</th>
-          <th (click)="sortTasks('dueDate')">Due Date</th>
-          <th (click)="sortTasks('priority')">Priority</th>
-          <th (click)="sortTasks('status')">Status</th>
+          <th (click)="sortTasks('name')">Title
+            <ng-container *ngIf="isTitleSorted"
+                [ngTemplateOutlet]="isNameAscending ? expandLess : expandMore"></ng-container>
+          </th>
+
+          <ng-template #expandLess>
+            <span class="material-symbols-outlined">expand_less</span>
+          </ng-template>
+
+          <ng-template #expandMore>
+            <span class="material-symbols-outlined">expand_more</span>
+          </ng-template>
+          <th (click)="sortTasks('dueDate')">Due Date
+            <ng-container *ngIf="isDateSorted"
+                [ngTemplateOutlet]="isDueDateAscending ? expandLess : expandMore"></ng-container>
+          </th>
+
+          <ng-template #expandLess>
+            <span class="material-symbols-outlined">expand_less</span>
+          </ng-template>
+
+          <ng-template #expandMore>
+            <span class="material-symbols-outlined">expand_more</span>
+          </ng-template>
+          <th (click)="sortTasks('priority')">Priority
+            <ng-container *ngIf="isPrioritySorted"
+                [ngTemplateOutlet]="isPriorityAscending ? expandLess : expandMore"></ng-container>
+          </th>
+
+          <ng-template #expandLess>
+            <span class="material-symbols-outlined">expand_less</span>
+          </ng-template>
+
+          <ng-template #expandMore>
+            <span class="material-symbols-outlined">expand_more</span>
+          </ng-template>
+          <th (click)="sortTasks('status')">Status
+            <ng-container *ngIf="isStatusSorted"
+                [ngTemplateOutlet]="isStatusAscending ? expandLess : expandMore"></ng-container>
+          </th>
+
+          <ng-template #expandLess>
+            <span class="material-symbols-outlined">expand_less</span>
+          </ng-template>
+
+          <ng-template #expandMore>
+            <span class="material-symbols-outlined">expand_more</span>
+          </ng-template>
           <th>Actions</th>
         </tr>
       </thead>
@@ -37,7 +81,11 @@
         <tr
             *ngFor="let task of taskList | slice : (page - 1) * pageSize : (page - 1) * pageSize + pageSize; let i = index">
           <td [class.overdue]="isOverdue(task)">{{ task.name }}</td>
-          <td [class.overdue]="isOverdue(task)">{{ task.dueDate | date:'MM/dd/yyyy' }}</td>
+          <td [class.overdue]="isOverdue(task)"><span
+                *ngIf="isOverdue(task)" style="font-weight: 800; color: red;">!!</span>{{
+            task.dueDate |
+            date:'MM/dd/yyyy'}}<span
+                *ngIf="isOverdue(task)" style="font-weight: 800; color: red">!!</span></td>
           <td [class.overdue]="isOverdue(task)">{{ task.priority }}</td>
           <td [class.overdue]="isOverdue(task)">{{ task.status }}</td>
           <td [class.overdue]="isOverdue(task)">
