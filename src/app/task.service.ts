@@ -102,25 +102,24 @@ export class TaskService {
     }
   }
 
-  /* () => {
-    const index = this.taskList.findIndex(task => task.id === taskToDelete.id);
-    if (index !== -1) {
-      this.getTasksFromDB();
-      this.taskSubscription.next(this.taskList.slice());
-    }
-  }, error => {
-    console.error('DELETE request failed', error);
-  } */
-
   getRandomTask() {
     return this.http.get('https://dummyjson.com/todos/random').subscribe({
       next: (res) => {
+        const priorities = ['Low', 'Medium', 'High'];
+        const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
+
+        const today = new Date();
+        const nextMonth = new Date();
+        nextMonth.setMonth(today.getMonth() + 1);
+        const randomDate = new Date(today.getTime() + Math.random() * (nextMonth.getTime() - today.getTime()));
+
         const taskToSend = {
-          name: res['todo'],
-          dueDate: new Date(),
-          priority: 'Low',
+          name: res['todo'], // todo is the key in the dummyjson response
+          dueDate: randomDate,
+          priority: randomPriority,
           status: 'To Do',
         };
+
         this.http.post(`${this.dbUrl}/data.json`, taskToSend).subscribe({
           next: () => {
             this.getTasksFromDB(); // add task to local array only after successful POST
