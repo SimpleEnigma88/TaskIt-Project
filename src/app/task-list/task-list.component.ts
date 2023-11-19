@@ -10,6 +10,7 @@ import { TaskService } from '../task.service';
 import Swal from 'sweetalert2';
 
 import { Subscription } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-task-list',
@@ -29,14 +30,25 @@ export class TaskListComponent implements OnInit, OnDestroy {
   selectedStatus = 'Status';
   selectedDate = 'Date';
   selectedPriority = 'Priority';
+  page = 1;
+  pageSize = 10;
 
   constructor(public dialog: MatDialog,
     private taskService: TaskService,
     private changeDetect: ChangeDetectorRef) { }
 
+
+  onPageChange(event: PageEvent) {
+    console.log(event);
+    this.page = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+  }
+
   isOverdue(task: Task): boolean {
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const dueDate = new Date(task.dueDate);
+    dueDate.setHours(0, 0, 0, 0);
     return dueDate < today;
   }
 
@@ -171,11 +183,30 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskList = this.taskService.getTasks();
   }
 
+  sortOrder: { [key: string]: boolean } = {};
+
+  sortTasks(key: string) {
+    const order = this.sortOrder[key] || false;
+    this.taskList.sort((a, b) => {
+      if (a[key] < b[key]) {
+        return order ? 1 : -1;
+      } else if (a[key] > b[key]) {
+        return order ? -1 : 1;
+      } else {
+        return 0;
+      }
+    });
+    this.sortOrder[key] = !order;
+  }
+
   ngOnInit() {
     this.updateLists();
 
     this.taskSubscription = this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
       this.taskList = tasks;
+    });
+
+    this.taskList.forEach(task => {
     });
   }
 

@@ -112,8 +112,6 @@ export class AuthService {
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
     const lsUser = new User(email, userId, token, expirationDate);
 
-    console.log('lsUser', lsUser);
-
     localStorage.setItem('userData', JSON.stringify(lsUser));
 
     this.user.next(new User(

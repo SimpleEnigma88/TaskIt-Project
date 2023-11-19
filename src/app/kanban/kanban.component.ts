@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Task } from '../task.model';
 import { Subscription } from 'rxjs';
 import { TaskService } from '../task.service';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-kanban',
@@ -12,6 +13,10 @@ export class KanbanComponent implements OnInit {
   taskList: Task[];
   private taskSub: Subscription;
   draggedTask: Task;
+  pageSize = 4;
+  toDoPage = 1;
+  inProgressPage = 1;
+  completePage = 1;
 
   constructor(private taskService: TaskService) { }
 
@@ -27,6 +32,26 @@ export class KanbanComponent implements OnInit {
       complete: () => {
       }
     });
+  }
+
+  countKanbanTasks(status: string): number {
+    return this.taskList.filter(task => task.status === status).length;
+  }
+
+  onToDoPageChange(event: PageEvent) {
+    console.log(event);
+    this.toDoPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+  }
+  onInProgressPageChange(event: PageEvent) {
+    console.log(event);
+    this.inProgressPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+  }
+  onCompletePageChange(event: PageEvent) {
+    console.log(event);
+    this.completePage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
   }
 
   dragOver(event: DragEvent) {

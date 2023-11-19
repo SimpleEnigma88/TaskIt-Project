@@ -25,7 +25,7 @@ import { AppSignupFormComponent } from './app-signup-form/app-signup-form.compon
 import { AppLoginFormComponent } from './app-login-form/app-login-form.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthInterceptorService } from './auth-interceptor.service';
-
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -53,7 +53,8 @@ import { AuthInterceptorService } from './auth-interceptor.service';
     MatNativeDateModule,
     MatSelectModule,
     AppRoutingModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatPaginatorModule
   ],
   providers: [TaskService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],

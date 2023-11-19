@@ -3,9 +3,6 @@ span {
   cursor: pointer;
 }
 
-.overdue {
-  background-color: salmon;
-}
 
 .reset-icon {
   justify-self: center;
@@ -13,4 +10,14 @@ span {
   margin-left: 15px;
   cursor: pointer;
   transform: scale(1.4);
+}
+
+th {
+  cursor: pointer;
+}
+
+.overdue {
+  background-color: #83bca9;
+  font-weight: 500;
+  color: white;
 }

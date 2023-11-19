@@ -10,18 +10,6 @@
         <option value="In Progress">In Progress</option>
         <option value="Complete">Complete</option>
       </select>
-      <select class="form-select d-inline-flex" style="width:10%; min-width: 85px; margin-right: 5px;" name="date"
-          id="date" [(ngModel)]="selectedDate" (change)="onFilterChange('Date', selectedDate)">
-        <option selected>Date</option>
-        <option value="Newest">Newest</option>
-        <option value="Oldest">Oldest</option>
-      </select>
-      <select class="form-select d-inline-flex" style="width:10%; min-width: 105px" name="priority" id="priority"
-          [(ngModel)]="selectedPriority" (change)="onFilterChange('Priority', selectedPriority)">
-        <option selected>Priority</option>
-        <option value="High">High</option>
-        <option value="Low">Low</option>
-      </select>
       <span class="d-flex justify-content-center align-items-center">
         <span class="material-symbols-outlined reset-icon" (click)="clearFilters()">
           restart_alt
@@ -34,24 +22,25 @@
       <button class="btn btn-success d-flex justify-content-end" (click)="getRandomTask()">Add Random Task</button>
     </div>
   </div>
-  <div class="task-table">
-    <table class="table table-hover">
+  <div>
+    <table class="table">
       <thead>
         <tr>
-          <th>Title</th>
-          <th>Due Date</th>
-          <th>Priority</th>
-          <th>Status</th>
+          <th (click)="sortTasks('name')">Title</th>
+          <th (click)="sortTasks('dueDate')">Due Date</th>
+          <th (click)="sortTasks('priority')">Priority</th>
+          <th (click)="sortTasks('status')">Status</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody *ngFor="let task of taskList; let i = index; ">
-        <tr>
-          <td>{{ task.name }}</td>
-          <td>{{ task.dueDate | date:'MM/dd/yyyy' }}</td>
-          <td>{{ task.priority }}</td>
-          <td>{{ task.status }}</td>
-          <td>
+      <tbody>
+        <tr
+            *ngFor="let task of taskList | slice : (page - 1) * pageSize : (page - 1) * pageSize + pageSize; let i = index">
+          <td [class.overdue]="isOverdue(task)">{{ task.name }}</td>
+          <td [class.overdue]="isOverdue(task)">{{ task.dueDate | date:'MM/dd/yyyy' }}</td>
+          <td [class.overdue]="isOverdue(task)">{{ task.priority }}</td>
+          <td [class.overdue]="isOverdue(task)">{{ task.status }}</td>
+          <td [class.overdue]="isOverdue(task)">
             <span class="material-symbols-outlined" style="margin-right: 5px;">
               visibility
             </span>
@@ -65,5 +54,10 @@
         </tr>
       </tbody>
     </table>
+    <mat-paginator [length]="taskList.length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[10]"
+        (page)="onPageChange($event)">
+    </mat-paginator>
   </div>
 </div>

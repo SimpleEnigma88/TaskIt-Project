@@ -5,12 +5,19 @@
     <div class="row">
       <div class="col-sm" style="height: 80%;">
         <b>To Do</b>
+        <mat-paginator *ngIf="countKanbanTasks('To Do') > 4" [length]="countKanbanTasks('To Do')"
+            [pageSize]="toDoPageSize"
+            [pageSizeOptions]="[4]"
+            (page)="onToDoPageChange($event)">
+        </mat-paginator>
 
-        <div class="col-sm border-4 shadow" style="height: 75vh;"
+        <div class="col-sm border-4 shadow cardHeight"
+            [class.paginatorPresent]="countKanbanTasks('To Do') > 4"
             (dragover)="dragOver($event)"
             (drop)="drop($event, 'To Do')">
 
-          <div class="cardColumns" *ngFor="let task of taskList | filter: 'status' : 'To Do'">
+          <div class="cardColumns" *ngFor="let task of taskList | filter: 'status' : 'To Do' | slice : (toDoPage - 1) *
+              pageSize : (toDoPage - 1) * pageSize + pageSize;">
             <div class="card mb-3"
                 draggable="true"
                 (dragstart)="dragStart($event, task)"
@@ -38,12 +45,19 @@
       </div>
       <div class="col-sm" style="height: 80%;">
         <b>In Progress</b>
+        <mat-paginator *ngIf="countKanbanTasks('In Progress') > 4" [length]="countKanbanTasks('In Progress')"
+            [pageSize]="inProgressPageSize"
+            [pageSizeOptions]="[4]"
+            (page)="onInProgressPageChange($event)">
+        </mat-paginator>
 
-        <div class="col-sm border-4 shadow" style="height: 75vh;"
+        <div class="col-sm border-4 shadow cardHeight"
+            [class.paginatorPresent]="countKanbanTasks('In Progress') > 4"
             (dragover)="dragOver($event)"
             (drop)="drop($event, 'In Progress')">
 
-          <div class="cardColumns" *ngFor="let task of taskList | filter: 'status' : 'In Progress'">
+          <div class="cardColumns" *ngFor="let task of taskList | filter: 'status' : 'In Progress' | slice : (inProgressPage - 1) *
+              pageSize : (inProgressPage - 1) * pageSize + pageSize;">
             <div class="card mb-3"
                 draggable="true"
                 (dragstart)="dragStart($event, task)"
@@ -71,12 +85,19 @@
       </div>
       <div class="col-sm" style="height: 80%;">
         <b>Complete</b>
+        <mat-paginator *ngIf="countKanbanTasks('Complete') > 4" [length]="countKanbanTasks('Complete')"
+            [pageSize]="completePageSize"
+            [pageSizeOptions]="[4]"
+            (page)="onCompletePageChange($event)">
+        </mat-paginator>
 
-        <div class="col-sm border-4 shadow" style="height: 75vh;"
+        <div class="col-sm border-4 shadow cardHeight"
+            [class.paginatorPresent]="countKanbanTasks('Complete') > 4"
             (dragover)="dragOver($event)"
             (drop)="drop($event, 'Complete')">
 
-          <div class="cardColumns" *ngFor="let task of taskList | filter: 'status' : 'Complete'">
+          <div class="cardColumns" *ngFor="let task of taskList | filter: 'status' : 'Complete' | slice : (completePage - 1) *
+              pageSize : (completePage - 1) * pageSize + pageSize;">
             <div class="card mb-3"
                 draggable="true"
                 (dragstart)="dragStart($event, task)"
