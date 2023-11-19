@@ -40,7 +40,7 @@ export class AppSignupFormComponent {
     const profileData = { firstName, lastName, profilePicture, email };
 
     this.authService.signup(email, password).subscribe({
-      next: response => {
+      next: () => {
         localStorage.setItem('profileData', JSON.stringify(profileData));
         this.userService.saveUserData(profileData);
         this.router.navigate(['/task-list']);

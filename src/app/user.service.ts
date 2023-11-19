@@ -29,7 +29,7 @@ export class UserService {
   saveUserData(profileData: any): void {
     this.authService.user.subscribe(user => {
       if (user) {
-        localStorage.setItem('userData', JSON.stringify(profileData));
+        localStorage.setItem('profileData', JSON.stringify(profileData));
         this.userId = user.id;
         this.dbUrl = `https://taskit-a5bca-default-rtdb.firebaseio.com/${this.userId}/userData`;
 
