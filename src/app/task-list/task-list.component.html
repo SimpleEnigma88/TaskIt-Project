@@ -54,7 +54,9 @@
         </tr>
       </tbody>
     </table>
-    <mat-paginator [length]="taskList.length"
+    <mat-paginator
+        *ngIf="taskList.length > 10"
+        [length]="taskList.length"
         [pageSize]="pageSize"
         [pageSizeOptions]="[10]"
         (page)="onPageChange($event)">
