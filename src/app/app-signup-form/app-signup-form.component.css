@@ -13,3 +13,33 @@
   justify-content: center;
   align-items: center;
 }
+
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.image-option {
+  flex: 0 0 calc(100% / 6 - 10px);
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.profile-picture {
+  border-radius: 50%;
+  width: 100%;
+  height: auto;
+}
+
+input[type="radio"]:checked+label .profile-picture {
+  border: 5px solid #00ffa2;
+}
+
+.hidden-radio {
+  display: none;
+}
+
+.image-option label {
+  cursor: pointer;
+}

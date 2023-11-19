@@ -1,6 +1,25 @@
 <div class="container">
   <form #signUp="ngForm" (ngSubmit)="onSubmit(signUp)" class="form-style">
     <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input type="text"
+          id="firstName"
+          name="firstName"
+          required class="form-control"
+          style="min-width: 325px;"
+          ngModel>
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input type="text"
+          id="lastName"
+          name="lastName"
+          required class="form-control"
+          style="min-width: 325px;"
+          ngModel>
+    </div>
+
+    <div class="form-group">
       <label for="email">Email:</label>
       <input type="email"
           id="email"
@@ -17,6 +36,19 @@
           required class="form-control"
           style="min-width: 325px;"
           ngModel>
+    </div>
+    <div class="form-group">
+      <label for="profilePicture">Profile Picture:</label>
+      <div class="image-grid">
+        <div *ngFor="let image of profilePictures; index as i" class="image-option">
+          <input type="radio" id="profilePicture{{i}}" name="profilePicture" [value]="image"
+              [ngModel]="defaultProfilePicture"
+              class="hidden-radio">
+          <label for="profilePicture{{i}}">
+            <img [src]="'assets/images/profilePictures/' + image" alt="Profile Picture" class="profile-picture">
+          </label>
+        </div>
+      </div>
     </div>
     <button
         type="submit"

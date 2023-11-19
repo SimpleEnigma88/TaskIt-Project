@@ -13,6 +13,10 @@ import { Subscription } from 'rxjs';
 export class SidebarComponent implements OnInit, OnDestroy {
   taskList: Task[];
   isAuthenticated = false;
+  firstName: string = 'TaskIt User';
+  email: string = 'email@email.com';
+  profilePicture: 'spy-7.png';
+  isLoading = true;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -24,6 +28,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.isAuthenticated = !!user;
     });
     if (this.isAuthenticated) {
+      if (localStorage.getItem('profileData')) {
+        const profileData = JSON.parse(localStorage.getItem('profileData'));
+        this.firstName = profileData.firstName;
+        this.email = profileData.email;
+        this.profilePicture = profileData.profilePicture;
+        this.isLoading = false;
+      }
       this.taskService.taskSubscription.subscribe(tasks => {
         this.taskList = tasks;
       });

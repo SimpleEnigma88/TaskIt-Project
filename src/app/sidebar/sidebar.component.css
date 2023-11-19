@@ -1,11 +1,15 @@
-.profilePic {
-  margin-top: 5px;
-  height: 35px;
-  width: 35px;
-  margin-right: 7px;
+.profilePic,
+.spinner {
+  width: 125px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .material-symbols-outlined {
-  margin-left: 23px;
+  margin-left: 10px;
   cursor: pointer;
+}
+
+.userInfo {
+  align-items: center;
 }

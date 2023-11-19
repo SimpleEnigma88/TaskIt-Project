@@ -2,21 +2,25 @@
   <br>
   <div>
     <span style=" font-size: 1.75rem; margin-top: 50px; margin-left: 20px;">
-      <b><span style="color:green;">TASK</span>IT</b>
+      <b><span style="color:#008000;">TASK</span>IT</b>
     </span>
     <button style="display: block; margin: 25px 0 0 20px; width: 80%" class="btn btn-success"
         (click)="onTaskListClick()">Task List</button>
     <button style="display: block; margin: 25px 0 0 20px; width: 80%" class="btn btn-success"
         (click)="onKanbanClick()">Kanban Board</button>
   </div>
-  <div class="d-flex flex-row mt-auto border-top border-1 align-items-center">
-    <div style="height: 55px;">
-      <img src="/assets/images/profile.jpg" alt="Profile" class="img-fluid rounded-circle mr-3 profilePic">
+  <div #profile class="d-flex flex-row mt-auto border-top border-1 align-items-center">
+    <div *ngIf="isLoading">
+      <img src="assets/images/Spinner.gif" class="spinner">
     </div>
-    <div style="font-size: .65rem; display: inline-block;">
+    <div *ngIf="!isLoading" style="min-width: 40px; min-height: 40px;">
+      <img [src]="'/assets/images/profilePictures/' + ((profilePicture) || 'hacker.png')" alt="Profile"
+          class="img-fluid rounded-circle profilePic">
+    </div>
+    <div class="userInfo ml-2 mt-3" style="font-size: .55rem;">
       <b>
-        <span style="display: inline; margin-top: 5px;">Robert</span>
-        <p>email&#64;gmail.com</p>
+        <span>{{ firstName | titlecase}}</span>
+        <p>{{ email}}</p>
       </b>
     </div>
     <div>
