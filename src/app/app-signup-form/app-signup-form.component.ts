@@ -34,9 +34,15 @@ export class AppSignupFormComponent {
     const email = form.value.email;
 
     const password = form.value.password;
+    const firstName = form.value.firstName ? form.value.firstName.toLowerCase() : 'TaskIt User';
+    const lastName = form.value.lastName ? form.value.lastName.toLowerCase() : '';
+    const profilePicture = form.value.profilePicture ? form.value.profilePicture : this.defaultProfilePicture;
+    const profileData = { firstName, lastName, profilePicture, email };
 
     this.authService.signup(email, password).subscribe({
       next: response => {
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+        this.userService.saveUserData(profileData);
         this.router.navigate(['/task-list']);
       },
       error: error => {
@@ -44,11 +50,7 @@ export class AppSignupFormComponent {
       }
     });
 
-    const firstName = form.value.firstName.toLowerCase();
-    const lastName = form.value.lastName.toLowerCase();
-    const profilePicture = form.value.profilePicture;
-    const userData = { firstName, lastName, profilePicture, email };
-    this.userService.saveUserData(userData);
+
 
     form.reset();
   }

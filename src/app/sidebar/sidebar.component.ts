@@ -17,6 +17,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   email: string = 'email@email.com';
   profilePicture: 'spy-7.png';
   isLoading = true;
+  storageSubscription: any;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -26,19 +27,28 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.authService.user.subscribe(user => {
       this.isAuthenticated = !!user;
+      this.updateProfileData();
     });
-    if (this.isAuthenticated) {
-      if (localStorage.getItem('profileData')) {
-        const profileData = JSON.parse(localStorage.getItem('profileData'));
-        this.firstName = profileData.firstName;
-        this.email = profileData.email;
-        this.profilePicture = profileData.profilePicture;
-        this.isLoading = false;
+
+    this.taskService.taskSubscription.subscribe(tasks => {
+      this.taskList = tasks;
+    });
+
+    this.storageSubscription = window.addEventListener('storage', (event) => {
+      if (event.key === 'profileData') {
+        this.updateProfileData();
       }
-      this.taskService.taskSubscription.subscribe(tasks => {
-        this.taskList = tasks;
-      });
-    };
+    });
+  };
+
+  updateProfileData() {
+    if (localStorage.getItem('profileData')) {
+      const profileData = JSON.parse(localStorage.getItem('profileData'));
+      this.firstName = profileData.firstName;
+      this.email = profileData.email;
+      this.profilePicture = profileData.profilePicture;
+      this.isLoading = false;
+    }
   }
 
   onTaskListClick() {
@@ -53,5 +63,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {
+    window.removeEventListener('storage', this.storageSubscription);
+  }
 }

@@ -1,7 +1,6 @@
 import { HttpHandler, HttpInterceptor, HttpParams, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { User } from './user.model';
 import { switchMap, take } from 'rxjs';
 
 @Injectable({
