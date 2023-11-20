@@ -25,6 +25,7 @@ export class KanbanComponent implements OnInit {
   toDoPage = 1;
   inProgressPage = 1;
   completePage = 1;
+  selectedTask: Task = null;
 
   constructor(public dialog: MatDialog,
     private taskService: TaskService) { }
@@ -41,6 +42,17 @@ export class KanbanComponent implements OnInit {
       complete: () => {
       }
     });
+  }
+
+  selectTask(task: Task) {
+    this.selectedTask = task;
+  }
+
+  deleteSelectedTask() {
+    if (this.selectedTask) {
+      this.taskService.deleteTask(this.selectedTask);
+      this.selectedTask = null;
+    }
   }
 
   addTask(task: Task) {

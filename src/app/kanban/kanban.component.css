@@ -45,6 +45,7 @@
 }
 
 .icon-img {
+  cursor: pointer;
   width: 55px;
   height: auto;
   margin-right: 15px;
