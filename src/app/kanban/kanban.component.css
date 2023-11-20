@@ -41,7 +41,6 @@
 
 .delete-icon {
   font-size: 72px;
-  /* Adjust this value to your needs */
 }
 
 .icon-img {
@@ -49,4 +48,8 @@
   width: 55px;
   height: auto;
   margin-right: 15px;
+}
+
+.selected {
+  box-shadow: 0 0 10px #90ee90;
 }

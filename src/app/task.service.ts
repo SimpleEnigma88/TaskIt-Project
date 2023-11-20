@@ -65,7 +65,7 @@ export class TaskService {
 
       .subscribe({
         next: () => {
-          this.getTasksFromDB(); // add task to local array only after successful PUT
+
           this.taskSubscription.next(this.taskList.slice());
         },
         error: error => {

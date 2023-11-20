@@ -6,6 +6,7 @@ import { PageEvent } from '@angular/material/paginator';
 
 import { MatDialog } from '@angular/material/dialog';
 import { DialogOverviewExampleDialog } from '../dialog-overview-example-dialog/dialog-overview-example-dialog';
+import { DialogData } from '../task-list/task.model';
 
 
 @Component({
@@ -85,7 +86,7 @@ export class KanbanComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(result => {
         if (result && this.validateData(result)) {
-          this.taskService.updateTask(result);
+          this.editTask(index, result);
         }
         else {
           alert("Please fill in all fields");
@@ -93,6 +94,21 @@ export class KanbanComponent implements OnInit {
       });
     } else {
       console.error(`No task at index ${index}`);
+    }
+  }
+
+  editTask(index: number, result: DialogData) {
+    const task = this.taskList[index];
+    if (task) {
+      task.name = result.name;
+      task.dueDate = new Date(result.dueDate);
+      task.status = result.status;
+      task.priority = result.priority;
+    }
+    try {
+      this.taskService.updateTask(task);
+    } catch (error) {
+      // handle error
     }
   }
 
@@ -155,3 +171,4 @@ export class KanbanComponent implements OnInit {
     this.taskService.updateTask(task);
   }
 }
+
