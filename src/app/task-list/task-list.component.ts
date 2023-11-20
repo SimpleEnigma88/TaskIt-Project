@@ -23,8 +23,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
   dueDate: Date;
   priority: string;
   status: string;
-  isEdit: boolean = false;
-  appTask: string = "Edit Task";
   taskList: Task[] = [];
   private taskSubscription: Subscription;
   selectedStatus = 'Status';
@@ -32,46 +30,25 @@ export class TaskListComponent implements OnInit, OnDestroy {
   selectedPriority = 'Priority';
   page = 1;
   pageSize = 10;
-  isTitleSorted = false;
-  isPrioritySorted = false;
-  isStatusSorted = false;
-  isDateSorted = false;
   isDueDateAscending = false;
   isPriorityAscending = false;
   isStatusAscending = false;
   isNameAscending = false;
+  sortState = {
+    name: false,
+    priority: false,
+    status: false,
+    date: false
+  };
 
   onSortChange(sortType: string) {
-    switch (sortType) {
-      case 'name':
-        console.log('Title');
-        this.isTitleSorted = true;
-        this.isPrioritySorted = false;
-        this.isStatusSorted = false;
-        this.isDateSorted = false;
-        break;
-      case 'priority':
-        console.log('Priority');
-        this.isTitleSorted = false;
-        this.isPrioritySorted = true;
-        this.isStatusSorted = false;
-        this.isDateSorted = false;
-        break;
-      case 'status':
-        console.log('Status');
-        this.isTitleSorted = false;
-        this.isPrioritySorted = false;
-        this.isStatusSorted = true;
-        this.isDateSorted = false;
-        break;
-      default: // 'Date'
-        console.log('Date');
-        this.isTitleSorted = false;
-        this.isPrioritySorted = false;
-        this.isStatusSorted = false;
-        this.isDateSorted = true;
-        break;
+    // Reset all properties to false
+    for (let key in this.sortState) {
+      this.sortState[key] = false;
     }
+
+    // Set the selected sortType to true
+    this.sortState[sortType] = true;
   }
 
 
@@ -194,7 +171,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   editDialog(index: number): void {
-    this.isEdit = true;
     const editTask = this.taskList[index];
 
     if (editTask) {
@@ -229,15 +205,28 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   sortTasks(key: string) {
     const order = this.sortOrder[key] || false;
-    this.taskList.sort((a, b) => {
-      if (a[key] < b[key]) {
-        return order ? 1 : -1;
-      } else if (a[key] > b[key]) {
-        return order ? -1 : 1;
-      } else {
-        return 0;
-      }
-    });
+    if (key === 'priority') {
+      const priorityOrder = ['Low', 'Medium', 'High'];
+      this.taskList.sort((a, b) => {
+        if (priorityOrder.indexOf(a[key]) < priorityOrder.indexOf(b[key])) {
+          return order ? 1 : -1;
+        } else if (priorityOrder.indexOf(a[key]) > priorityOrder.indexOf(b[key])) {
+          return order ? -1 : 1;
+        } else {
+          return 0;
+        }
+      });
+    } else {
+      this.taskList.sort((a, b) => {
+        if (a[key] < b[key]) {
+          return order ? 1 : -1;
+        } else if (a[key] > b[key]) {
+          return order ? -1 : 1;
+        } else {
+          return 0;
+        }
+      });
+    }
     this.sortOrder[key] = !order;
     this.switchAscendingSort(key);
     this.onSortChange(key);
@@ -270,9 +259,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
     this.taskSubscription = this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
       this.taskList = tasks;
-    });
-
-    this.taskList.forEach(task => {
     });
   }
 

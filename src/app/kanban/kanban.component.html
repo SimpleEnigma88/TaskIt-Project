@@ -1,5 +1,14 @@
 <div class="flex-container container" style="padding: 50px 25px 0 25px">
-  <h1>Kanban Board</h1>
+  <div class="header-container">
+    <h1>Kanban Board</h1>
+    <span class="delete-icon">
+      <img class="icon-img" src="assets/images/addicon.png" alt="Add Task" (drop)="drop($event, 'delete')"
+          (dragover)="dragOver($event)">
+      <img class="icon-img" src="assets/images/trashicon.png" alt="Delete Task" title="Drop Here To Delete Task"
+          (drop)="drop($event, 'delete')"
+          (dragover)="dragOver($event)">
+    </span>
+  </div>
   <hr>
   <div class="container">
     <div class="row">

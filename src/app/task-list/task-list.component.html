@@ -27,7 +27,7 @@
       <thead>
         <tr>
           <th (click)="sortTasks('name')">Title
-            <ng-container *ngIf="isTitleSorted"
+            <ng-container *ngIf="sortState.name"
                 [ngTemplateOutlet]="isNameAscending ? expandLess : expandMore"></ng-container>
           </th>
 
@@ -39,7 +39,7 @@
             <span class="material-symbols-outlined">expand_more</span>
           </ng-template>
           <th (click)="sortTasks('dueDate')">Due Date
-            <ng-container *ngIf="isDateSorted"
+            <ng-container *ngIf="sortState.date"
                 [ngTemplateOutlet]="isDueDateAscending ? expandLess : expandMore"></ng-container>
           </th>
 
@@ -51,7 +51,7 @@
             <span class="material-symbols-outlined">expand_more</span>
           </ng-template>
           <th (click)="sortTasks('priority')">Priority
-            <ng-container *ngIf="isPrioritySorted"
+            <ng-container *ngIf="sortState.priority"
                 [ngTemplateOutlet]="isPriorityAscending ? expandLess : expandMore"></ng-container>
           </th>
 
@@ -63,7 +63,7 @@
             <span class="material-symbols-outlined">expand_more</span>
           </ng-template>
           <th (click)="sortTasks('status')">Status
-            <ng-container *ngIf="isStatusSorted"
+            <ng-container *ngIf="sortState.status"
                 [ngTemplateOutlet]="isStatusAscending ? expandLess : expandMore"></ng-container>
           </th>
 
@@ -92,10 +92,11 @@
             <span class="material-symbols-outlined" style="margin-right: 5px;">
               visibility
             </span>
-            <span class="material-symbols-outlined" style="margin-right: 5px;" (click)="editDialog(i)">
+            <span class="material-symbols-outlined" style="margin-right: 5px;"
+                (click)="editDialog((page - 1) * pageSize + i)">
               edit_square
             </span>
-            <a (click)="deleteTask(i)"><span class="material-symbols-outlined">
+            <a (click)="deleteTask((page - 1) * pageSize + i)"><span class="material-symbols-outlined">
                 delete
               </span></a>
           </td>

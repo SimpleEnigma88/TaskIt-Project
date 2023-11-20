@@ -34,6 +34,7 @@ export class TaskService {
     });
   }
 
+
   addTask(task: Task): Promise<any> {
     const taskToSend = {
       id: task.id,
@@ -76,25 +77,38 @@ export class TaskService {
       });
   }
 
+
+
   deleteTask(taskToDelete: Task): void {
+    console.log('Task to delete: ', taskToDelete)
+    this.getTasksFromDB();
+    const actualIndex = this.taskList.findIndex(task => task.id === taskToDelete.id);
+    console.log('Actual index: ', actualIndex);
+
     const taskKey = taskToDelete.id;
+    console.log('Task to delete: ', taskToDelete.name);
+
     if (taskKey) {
       this.http.delete(`${this.dbUrl}/data/${taskKey}.json`)
 
         .pipe(takeUntil(this.unsubscribe)) // Same pipe method as above
 
         .subscribe({
-          next: () => {
-            const index = this.taskList.findIndex(task => task.id === taskToDelete.id);
-            if (index !== -1) {
-              this.getTasksFromDB();
+          next: (res) => {
+            if (actualIndex !== -1) {
+              this.taskList.splice(actualIndex, 1);
               this.taskSubscription.next(this.taskList.slice());
+              console.log('Task deleted: ', taskToDelete);
+
             }
           },
           error: error => {
+            console.log('DELETE request failed', error);
             console.error('DELETE request failed', error);
           },
           complete: () => {
+            console.log('Task deleted: ', taskToDelete);
+
           }
         });
     } else {

@@ -32,3 +32,20 @@
 .paginatorPresent {
   height: 69.2vh;
 }
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-icon {
+  font-size: 72px;
+  /* Adjust this value to your needs */
+}
+
+.icon-img {
+  width: 55px;
+  height: auto;
+  margin-right: 15px;
+}
