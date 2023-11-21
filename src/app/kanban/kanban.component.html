@@ -1,22 +1,32 @@
 <div class="flex-container container" style="padding: 50px 25px 0 25px">
   <div class="header-container">
-    <h1>Kanban Board</h1>
-    <span class="delete-icon dropBorder">
-      <div class="image-container d-inline-block">
-        <img class="icon-img" src="assets/images/editicon.png" alt="Edit Task"
-            (drop)="editDialog(taskList.indexOf(selectedTask))"
-            (click)="editDialog(taskList.indexOf(selectedTask))"
-            [ngStyle]="{'cursor': selectedTask ? 'pointer' : 'default'}">
-        <img class="icon-img" src="assets/images/trashicon.png" alt="Delete Task" title="Drop Here To Delete Task"
-            (drop)="drop($event, 'delete')"
-            (dragover)="dragOver($event)"
-            (click)="deleteSelectedTask()"
-            [ngStyle]="{'cursor': selectedTask ? 'pointer' : 'default'}">
-        <img class="icon-img pointer-cursor d-inline-block" src="assets/images/addicon.png" alt="Add Task"
-            (click)="openDialog()">
-      </div>
-      <p class="dropText">Drop Zone</p>
+    <span>
+      <h1><span style="color: green">Kan</span>ban Board</h1>
+      <img class="icon-img pointer-cursor d-inline-block" src="assets/images/addicon.png" alt="Add Task"
+          (click)="openDialog()">
+      <span class="fadeText">Add Task</span>
     </span>
+    <div class="dropBorder d-inline-block pt-2">
+      <div class="image-container d-flex justify-content-evenly">
+        <div>
+          <img class="icon-img mx-3" src="assets/images/editicon.png" alt="Edit Task"
+              (drop)="editDialog(taskList.indexOf(selectedTask))"
+              (click)="editDialog(taskList.indexOf(selectedTask))"
+              [ngStyle]="{'cursor': selectedTask ? 'pointer' : 'default'}">
+        </div>
+        <div>
+          <img class="icon-img mx-3" src="assets/images/trashicon.png" alt="Delete Task"
+              title="Drop Here To Delete Task"
+              (drop)="drop($event, 'delete')"
+              (dragover)="dragOver($event)"
+              (click)="deleteSelectedTask()"
+              [ngStyle]="{'cursor': selectedTask ? 'pointer' : 'default'}">
+        </div>
+      </div>
+      <div class="text-wrapper">
+        <p class="fadeText">Drop Zone</p>
+      </div>
+    </div>
   </div>
   <hr>
   <div class="container">
