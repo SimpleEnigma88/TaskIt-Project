@@ -81,23 +81,25 @@ export class KanbanComponent implements OnInit {
   }
 
   editDialog(index: number): void {
-    const editTask = this.taskList[index];
+    if (this.selectedTask !== null) {
+      const editTask = this.taskList[index];
 
-    if (editTask) {
-      const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-        data: { name: editTask.name, dueDate: editTask.dueDate, priority: editTask.priority, status: editTask.status },
-      });
+      if (editTask) {
+        const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+          data: { name: editTask.name, dueDate: editTask.dueDate, priority: editTask.priority, status: editTask.status },
+        });
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result && this.validateData(result)) {
-          this.editTask(index, result);
-        }
-        else {
-          alert("Please fill in all fields");
-        }
-      });
-    } else {
-      console.error(`No task at index ${index}`);
+        dialogRef.afterClosed().subscribe(result => {
+          if (result && this.validateData(result)) {
+            this.editTask(index, result);
+          }
+          else {
+            alert("Please fill in all fields");
+          }
+        });
+      } else {
+        console.error(`No task at index ${index}`);
+      }
     }
   }
 

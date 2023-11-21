@@ -4,4 +4,5 @@ export interface Task {
   priority: string;
   status: string;
   id?: string;
+  description?: string;
 }
