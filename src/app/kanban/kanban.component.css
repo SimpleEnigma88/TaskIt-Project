@@ -58,3 +58,33 @@
 .selected {
   box-shadow: 0 0 20px #008000;
 }
+
+.dropText {
+  text-align: center;
+  font-size: 18px;
+  color: #808080;
+  margin-top: -20px;
+}
+
+.dropBox {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropBox>*:nth-child(2) {
+  width: 100%;
+}
+
+.dropBorder {
+  border: 1px solid green;
+  border-radius: 15px;
+  width: 215px;
+  height: 120px;
+  box-shadow: 0 0 8px #008000;
+}

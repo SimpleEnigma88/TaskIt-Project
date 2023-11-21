@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 import { DialogOverviewExampleDialog } from '../dialog-overview-example-dialog/dialog-overview-example-dialog';
@@ -10,7 +10,7 @@ import { TaskService } from '../task.service';
 import Swal from 'sweetalert2';
 
 import { Subscription } from 'rxjs';
-import { PageEvent } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-task-list',
@@ -40,6 +40,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     status: false,
     date: false
   };
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   onSortChange(sortType: string) {
     // Reset all properties to false
@@ -54,7 +55,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   constructor(public dialog: MatDialog,
     private taskService: TaskService,
-    private changeDetect: ChangeDetectorRef) { }
+    private cdr: ChangeDetectorRef) { }
 
 
   onPageChange(event: PageEvent) {
@@ -93,7 +94,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     } else {
       this.taskList = this.taskService.getTasks(filterType, filterName);
     }
-    this.changeDetect.detectChanges();
+    this.cdr.detectChanges();
   }
 
   clearFilters() {
@@ -146,8 +147,18 @@ export class TaskListComponent implements OnInit, OnDestroy {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
+        console.log('Deleting Task: ', this.taskList[index])
         this.taskService.deleteTask(this.taskList[index]);
-        Swal.fire('Deleted!', 'Your task has been deleted.', 'success');
+        // Check if the current page is empty after deletion
+        const startIndex = (this.page - 1) * this.pageSize;
+        const endIndex = startIndex + this.pageSize;
+        if (this.taskList.slice(startIndex, endIndex).length === 0) {
+          this.page = 1;
+          this.updateLists();
+          this.cdr.detectChanges();  // update the task list and paginator
+
+          this.paginator.pageIndex = 0;
+        }
       }
     });
   }
@@ -158,15 +169,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result && this.validateData(result)) {
-        this.addTask(result);
-        this.clearFilters();
-      }
-      else {
-        alert("Please fill in all fields");
+      if (result) {
+        if (this.validateData(result)) {
+          this.addTask(result);
+          this.clearFilters();
+        } else {
+          alert("Please fill in all fields");
+        }
       }
     });
-
   }
 
   editDialog(index: number): void {
@@ -198,6 +209,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   updateLists() {
     this.taskList = this.taskService.getTasks();
+    this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
+      this.taskList = tasks;
+    });
   }
 
   sortOrder: { [key: string]: boolean } = {};

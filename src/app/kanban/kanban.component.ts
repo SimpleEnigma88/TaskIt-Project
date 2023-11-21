@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Task } from '../task.model';
 import { Subscription } from 'rxjs';
 import { TaskService } from '../task.service';
@@ -14,7 +14,7 @@ import { DialogData } from '../task-list/task.model';
   templateUrl: './kanban.component.html',
   styleUrls: ['./kanban.component.css']
 })
-export class KanbanComponent implements OnInit {
+export class KanbanComponent implements OnInit, OnDestroy {
   name: string;
   dueDate: Date;
   priority: string;
@@ -31,6 +31,7 @@ export class KanbanComponent implements OnInit {
   constructor(public dialog: MatDialog,
     private taskService: TaskService) { }
 
+
   ngOnInit() {
     this.taskList = this.taskService.getTasks();
     this.taskSub = this.taskService.taskSubscription.subscribe({
@@ -45,8 +46,13 @@ export class KanbanComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.taskSub.unsubscribe();
+  }
+
   selectTask(task: Task) {
-    if (this.selectedTask === null) {
+    if (this.selectedTask === null || this.selectedTask.id !== task.id) {
+      this.selectedTask = null;
       this.selectedTask = task;
       return;
     }
@@ -60,24 +66,20 @@ export class KanbanComponent implements OnInit {
     }
   }
 
-  addTask(task: Task) {
-    this.taskService.addTask(task);
-  }
-
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
       data: { title: "Add Task", name: this.name, dueDate: this.dueDate, priority: this.priority, status: this.status },
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result && this.validateData(result)) {
-        this.addTask(result);
-      }
-      else {
-        alert("Please fill in all fields");
+      if (result) {
+        if (this.validateData(result)) {
+          this.taskService.addTask(result);
+        } else {
+          alert("Please fill in all fields");
+        }
       }
     });
-
   }
 
   editDialog(index: number): void {
@@ -92,9 +94,6 @@ export class KanbanComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
           if (result && this.validateData(result)) {
             this.editTask(index, result);
-          }
-          else {
-            alert("Please fill in all fields");
           }
         });
       } else {
@@ -149,30 +148,29 @@ export class KanbanComponent implements OnInit {
 
   dragStart(event: DragEvent, task: Task) {
     this.draggedTask = task;
-    event.dataTransfer.setData('text/plain', task.id);
-  }
-
-  dragEnd(event: DragEvent) {
-    this.draggedTask = null;
+    console.log('Drag Task ID', task.id);
   }
 
   drop(event: DragEvent, status: string) {
     event.preventDefault();
-    const id = event.dataTransfer.getData('text');
-    const task = this.taskList.find(task => task.id === id);
-
+    const task = this.draggedTask;
     if (task) {
+      console.log('Drop Task ID', task.id);
       if (status === 'delete') {
         this.taskService.deleteTask(task);
-        return;
       } else {
-        this.draggedTask.status = status;
+        task.status = status;
         this.taskService.updateTask(task);
+        this.draggedTask = null;
+        this.taskService.taskSubscription.next(this.taskList.slice());
       }
     }
   }
+
   onTaskStatusChange(task: Task): void {
     this.taskService.updateTask(task);
   }
+
+
 }
 

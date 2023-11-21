@@ -1,16 +1,21 @@
 <div class="flex-container container" style="padding: 50px 25px 0 25px">
   <div class="header-container">
     <h1>Kanban Board</h1>
-    <span class="delete-icon">
-      <img class="icon-img" src="assets/images/editicon.png" alt="Edit Task"
-          (click)="editDialog(taskList.indexOf(selectedTask))"
-          [class.pointer-cursor]="selectedTask !== null">
-      <img class="icon-img pointer-cursor" src="assets/images/addicon.png" alt="Add Task" (click)="openDialog()">
-      <img class="icon-img" src="assets/images/trashicon.png" alt="Delete Task" title="Drop Here To Delete Task"
-          (drop)="drop($event, 'delete')"
-          (dragover)="dragOver($event)"
-          (click)="deleteSelectedTask()"
-          [class.pointer-cursor]="selectedTask !== null">
+    <span class="delete-icon dropBorder">
+      <div class="image-container d-inline-block">
+        <img class="icon-img" src="assets/images/editicon.png" alt="Edit Task"
+            (drop)="editDialog(taskList.indexOf(selectedTask))"
+            (click)="editDialog(taskList.indexOf(selectedTask))"
+            [ngStyle]="{'cursor': selectedTask ? 'pointer' : 'default'}">
+        <img class="icon-img" src="assets/images/trashicon.png" alt="Delete Task" title="Drop Here To Delete Task"
+            (drop)="drop($event, 'delete')"
+            (dragover)="dragOver($event)"
+            (click)="deleteSelectedTask()"
+            [ngStyle]="{'cursor': selectedTask ? 'pointer' : 'default'}">
+        <img class="icon-img pointer-cursor d-inline-block" src="assets/images/addicon.png" alt="Add Task"
+            (click)="openDialog()">
+      </div>
+      <p class="dropText">Drop Zone</p>
     </span>
   </div>
   <hr>
@@ -18,9 +23,8 @@
     <div class="row card-columns-container">
       <div class="col-sm cardColumns">
         <b>To Do</b>
-        <mat-paginator *ngIf="countKanbanTasks('To Do') > 4"
+        <mat-paginator
             [length]="countKanbanTasks('To Do')"
-            [pageSize]="toDoPageSize"
             [pageSizeOptions]="[4]"
             (page)="onToDoPageChange($event)">
         </mat-paginator>
@@ -32,13 +36,11 @@
 
           <div class="cardColumns" *ngFor="let task of taskList |
           filter: 'status' : 'To Do' |
-          slice : (toDoPage - 1) *
-              pageSize : (toDoPage - 1) * pageSize + pageSize;">
+          slice : (toDoPage - 1) * pageSize : (toDoPage - 1) * pageSize + pageSize;">
             <div class="card mb-3"
                 [class.selected]="task === selectedTask"
                 draggable="true"
                 (dragstart)="dragStart($event, task)"
-                (dragend)="dragEnd($event)"
                 (click)="selectTask(task)">
 
               <div class="card-body d-flex justify-content-between align-items-center">
@@ -63,9 +65,8 @@
       </div>
       <div class="col-sm cardColumns">
         <b>In Progress</b>
-        <mat-paginator *ngIf="countKanbanTasks('In Progress') > 4"
+        <mat-paginator
             [length]="countKanbanTasks('In Progress')"
-            [pageSize]="inProgressPageSize"
             [pageSizeOptions]="[4]"
             (page)="onInProgressPageChange($event)">
         </mat-paginator>
@@ -76,14 +77,12 @@
             (drop)="drop($event, 'In Progress')">
 
           <div class="cardColumns" *ngFor="let task of taskList |
-          filter: 'status' : 'In Progress' |
-          slice : (inProgressPage - 1) *
-              pageSize : (inProgressPage - 1) * pageSize + pageSize;">
+                filter: 'status' : 'In Progress' |
+                slice : (inProgressPage - 1) * pageSize : (inProgressPage - 1) * pageSize + pageSize;">
             <div class="card mb-3"
                 [class.selected]="task === selectedTask"
                 draggable="true"
                 (dragstart)="dragStart($event, task)"
-                (dragend)="dragEnd($event)"
                 (click)="selectTask(task)">
 
               <div class="card-body d-flex justify-content-between align-items-center">
@@ -108,9 +107,8 @@
       </div>
       <div class="col-sm cardColumns">
         <b>Complete</b>
-        <mat-paginator *ngIf="countKanbanTasks('Complete') > 4"
+        <mat-paginator
             [length]="countKanbanTasks('Complete')"
-            [pageSize]="completePageSize"
             [pageSizeOptions]="[4]"
             (page)="onCompletePageChange($event)">
         </mat-paginator>
@@ -121,14 +119,13 @@
             (drop)="drop($event, 'Complete')">
 
           <div class="cardColumns" *ngFor="let task of taskList |
-          filter: 'status' : 'Complete' |
-          slice : (completePage - 1) *
-              pageSize : (completePage - 1) * pageSize + pageSize;">
+                filter: 'status' : 'Complete' |
+                slice : (completePage - 1) *
+                    pageSize : (completePage - 1) * pageSize + pageSize;">
             <div class="card mb-3"
                 [class.selected]="task === selectedTask"
                 draggable="true"
                 (dragstart)="dragStart($event, task)"
-                (dragend)="dragEnd($event)"
                 (click)="selectTask(task)">
 
               <div class="card-body d-flex justify-content-between align-items-center">
@@ -140,8 +137,7 @@
                 </span>
                 <div class="form-group mb-0 selectBox">
                   <select class="form-control" [(ngModel)]="task.status"
-                      (change)="onTaskStatusChange(task)"
-                      style="width: 115px;">
+                      (change)="onTaskStatusChange(task)" style="width: 115px;">
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Complete">Complete</option>

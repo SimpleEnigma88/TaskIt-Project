@@ -65,7 +65,7 @@ export class TaskService {
 
       .subscribe({
         next: () => {
-
+          this.getTasksFromDB();
           this.taskSubscription.next(this.taskList.slice());
         },
         error: error => {
