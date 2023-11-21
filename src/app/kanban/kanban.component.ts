@@ -148,7 +148,6 @@ export class KanbanComponent implements OnInit {
   dragStart(event: DragEvent, task: Task) {
     this.draggedTask = task;
     event.dataTransfer.setData('text/plain', task.id);
-    this.selectedTask = null;
   }
 
   dragEnd(event: DragEvent) {
