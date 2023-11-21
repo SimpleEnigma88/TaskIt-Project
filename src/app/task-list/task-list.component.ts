@@ -9,7 +9,7 @@ import { TaskService } from '../task.service';
 
 import Swal from 'sweetalert2';
 
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
@@ -24,6 +24,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   priority: string;
   status: string;
   taskList: Task[] = [];
+  private taskSubject = new Subject<Task[]>();
   private taskSubscription: Subscription;
   selectedStatus = 'Status';
   selectedDate = 'Date';
@@ -147,18 +148,24 @@ export class TaskListComponent implements OnInit, OnDestroy {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log('Deleting Task: ', this.taskList[index])
-        this.taskService.deleteTask(this.taskList[index]);
-        // Check if the current page is empty after deletion
-        const startIndex = (this.page - 1) * this.pageSize;
-        const endIndex = startIndex + this.pageSize;
-        if (this.taskList.slice(startIndex, endIndex).length === 0) {
-          this.page = 1;
-          this.updateLists();
-          this.cdr.detectChanges();  // update the task list and paginator
 
-          this.paginator.pageIndex = 0;
-        }
+        this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
+          this.taskList = tasks;
+
+          // Check if the current page is empty after deletion
+          const startIndex = (this.page - 1) * this.pageSize;
+
+          const endIndex = startIndex + this.pageSize;
+
+
+          if (this.taskList.slice(startIndex, endIndex).length === 0) {
+            // If the current page number is greater than 1, decrement it by 1
+            if (this.page > 1) {
+              this.page--;
+            }
+          }
+        });
+        this.taskService.deleteTask(this.taskList[index]);
       }
     });
   }
@@ -208,10 +215,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   updateLists() {
-    this.taskList = this.taskService.getTasks();
     this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
       this.taskList = tasks;
     });
+    this.taskList = this.taskService.getTasks();
   }
 
   sortOrder: { [key: string]: boolean } = {};
@@ -269,14 +276,16 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.updateLists();
-
-    this.taskSubscription = this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
+    this.taskSubscription = this.taskSubject.subscribe((tasks: Task[]) => {
       this.taskList = tasks;
     });
+
   }
 
   ngOnDestroy(): void {
-    this.taskSubscription.unsubscribe();
+    if (this.taskSubscription) {
+      this.taskSubscription.unsubscribe();
+    }
   }
 
 

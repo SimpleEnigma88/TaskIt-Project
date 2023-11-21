@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, takeUntil, tap } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { Task } from './task.model';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
@@ -95,13 +95,11 @@ export class TaskService {
             if (actualIndex !== -1) {
               this.taskList.splice(actualIndex, 1);
               this.taskSubscription.next(this.taskList.slice());
-
             }
           },
           error: error => {
           },
           complete: () => {
-
           }
         });
     } else {

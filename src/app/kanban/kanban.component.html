@@ -19,7 +19,7 @@
         <div>
           <img class="trash-icon icon-img mx-3" src="assets/images/trashicon.png" alt="Delete Task"
               title="Drop Here To Delete Task"
-              (drop)="drop($event, 'delete')"
+              (drop)="drop($event, 'delete', oldStatus)"
               (dragover)="dragOver($event)"
               (click)="deleteSelectedTask()"
               [ngStyle]="{'cursor': selectedTask ? 'pointer' : 'default'}">
@@ -44,7 +44,7 @@
         <div class="col-sm border-4 shadow cardHeight"
             [class.paginatorPresent]="countKanbanTasks('To Do') > 4"
             (dragover)="dragOver($event)"
-            (drop)="drop($event, 'To Do')">
+            (drop)="drop($event, 'To Do', oldStatus)">
 
           <div class="cardColumns" *ngFor="let task of taskList |
           filter: 'status' : 'To Do' |
@@ -86,7 +86,7 @@
         <div class="col-sm border-4 shadow cardHeight"
             [class.paginatorPresent]="countKanbanTasks('In Progress') > 4"
             (dragover)="dragOver($event)"
-            (drop)="drop($event, 'In Progress')">
+            (drop)="drop($event, 'In Progress', oldStatus)">
 
           <div class="cardColumns" *ngFor="let task of taskList |
                 filter: 'status' : 'In Progress' |
@@ -128,7 +128,7 @@
         <div class="col-sm border-4 shadow cardHeight"
             [class.paginatorPresent]="countKanbanTasks('Complete') > 4"
             (dragover)="dragOver($event)"
-            (drop)="drop($event, 'Complete')">
+            (drop)="drop($event, 'Complete', oldStatus)">
 
           <div class="cardColumns" *ngFor="let task of taskList |
                 filter: 'status' : 'Complete' |

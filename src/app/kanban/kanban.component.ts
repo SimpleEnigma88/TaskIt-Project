@@ -78,6 +78,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
 
   deleteSelectedTask() {
     if (this.selectedTask) {
+
       this.taskService.deleteTask(this.selectedTask);
       this.selectedTask = null;
     }
@@ -162,17 +163,41 @@ export class KanbanComponent implements OnInit, OnDestroy {
   dragOver(event: DragEvent) {
     event.preventDefault();
   }
-
+  oldStatus: string;
   dragStart(event: DragEvent, task: Task) {
     this.draggedTask = task;
-    console.log('Drag Task ID', task.id);
+    this.oldStatus = task.status;
   }
 
-  drop(event: DragEvent, status: string) {
+  drop(event: DragEvent, status: string, oldStatus: string) {
     event.preventDefault();
     const task = this.draggedTask;
+
+    this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
+      // Get the tasks with the old status
+      const oldStatusTasks = tasks.filter(task => task.status === oldStatus);
+
+      // Calculate the start index of the current page
+      let startIndex;
+      if (oldStatus === 'To Do') {
+        startIndex = (this.toDoPage - 1) * this.pageSize;
+        if (oldStatusTasks.slice(startIndex, startIndex + this.pageSize).length === 0 && this.toDoPage > 1) {
+          this.toDoPage--;
+        }
+      } else if (oldStatus === 'In Progress') {
+        startIndex = (this.inProgressPage - 1) * this.pageSize;
+        if (oldStatusTasks.slice(startIndex, startIndex + this.pageSize).length === 0 && this.inProgressPage > 1) {
+          this.inProgressPage--;
+        }
+      } else if (oldStatus === 'Complete') {
+        startIndex = (this.completePage - 1) * this.pageSize;
+        if (oldStatusTasks.slice(startIndex, startIndex + this.pageSize).length === 0 && this.completePage > 1) {
+          this.completePage--;
+        }
+      }
+    });
+
     if (task) {
-      console.log('Drop Task ID', task.id);
       if (status === 'delete') {
         this.taskService.deleteTask(task);
       } else {
