@@ -58,7 +58,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
 
   onPageChange(event: PageEvent) {
-    console.log(event);
     this.page = event.pageIndex + 1;
     this.pageSize = event.pageSize;
   }

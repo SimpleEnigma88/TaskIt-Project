@@ -129,12 +129,10 @@ export class KanbanComponent implements OnInit {
   }
 
   onToDoPageChange(event: PageEvent) {
-    console.log(event);
     this.toDoPage = event.pageIndex + 1;
     this.pageSize = event.pageSize;
   }
   onInProgressPageChange(event: PageEvent) {
-    console.log(event);
     this.inProgressPage = event.pageIndex + 1;
     this.pageSize = event.pageSize;
   }
@@ -150,6 +148,7 @@ export class KanbanComponent implements OnInit {
   dragStart(event: DragEvent, task: Task) {
     this.draggedTask = task;
     event.dataTransfer.setData('text/plain', task.id);
+    this.selectedTask = null;
   }
 
   dragEnd(event: DragEvent) {
