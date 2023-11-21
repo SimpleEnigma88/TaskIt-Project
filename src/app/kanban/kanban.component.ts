@@ -27,6 +27,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
   inProgressPage = 1;
   completePage = 1;
   selectedTask: Task = null;
+  selectCount = 0;
 
   constructor(public dialog: MatDialog,
     private taskService: TaskService) { }
@@ -54,9 +55,25 @@ export class KanbanComponent implements OnInit, OnDestroy {
     if (this.selectedTask === null || this.selectedTask.id !== task.id) {
       this.selectedTask = null;
       this.selectedTask = task;
+      this.onTaskSelect();
       return;
     }
     this.selectedTask = null;
+  }
+
+  onTaskSelect() {
+    // Assuming selectCount is a property of the class
+    this.selectCount++;
+    if (this.selectCount <= 2) {
+      const editIcon = document.querySelector('.edit-icon');
+      const trashIcon = document.querySelector('.trash-icon');
+      editIcon.classList.add('shake-icon');
+      trashIcon.classList.add('shake-icon');
+      setTimeout(() => {
+        editIcon.classList.remove('shake-icon');
+        trashIcon.classList.remove('shake-icon');
+      }, 1000);
+    }
   }
 
   deleteSelectedTask() {

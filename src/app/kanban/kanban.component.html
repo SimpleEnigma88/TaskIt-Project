@@ -2,20 +2,22 @@
   <div class="header-container">
     <span>
       <h1><span style="color: green">Kan</span>ban Board</h1>
-      <img class="icon-img pointer-cursor d-inline-block" src="assets/images/addicon.png" alt="Add Task"
+      <img class="icon-img pointer-cursor d-inline-block"
+
+          src="assets/images/addicon.png" alt="Add Task"
           (click)="openDialog()">
       <span class="fadeText">Add Task</span>
     </span>
     <div class="dropBorder d-inline-block pt-2">
       <div class="image-container d-flex justify-content-evenly">
         <div>
-          <img class="icon-img mx-3" src="assets/images/editicon.png" alt="Edit Task"
+          <img class="edit-icon icon-img mx-3" src="assets/images/editicon.png" alt="Edit Task"
               (drop)="editDialog(taskList.indexOf(selectedTask))"
               (click)="editDialog(taskList.indexOf(selectedTask))"
               [ngStyle]="{'cursor': selectedTask ? 'pointer' : 'default'}">
         </div>
         <div>
-          <img class="icon-img mx-3" src="assets/images/trashicon.png" alt="Delete Task"
+          <img class="trash-icon icon-img mx-3" src="assets/images/trashicon.png" alt="Delete Task"
               title="Drop Here To Delete Task"
               (drop)="drop($event, 'delete')"
               (dragover)="dragOver($event)"
