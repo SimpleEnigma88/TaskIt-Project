@@ -46,7 +46,11 @@ export class KanbanComponent implements OnInit {
   }
 
   selectTask(task: Task) {
-    this.selectedTask = task;
+    if (this.selectedTask === null) {
+      this.selectedTask = task;
+      return;
+    }
+    this.selectedTask = null;
   }
 
   deleteSelectedTask() {

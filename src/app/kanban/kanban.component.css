@@ -8,11 +8,16 @@
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
-.cardColumns {
+.card-columns-container {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.cardColumns {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .cardHeight {
@@ -27,10 +32,6 @@
   position: absolute;
   top: 3px;
   right: 3px;
-}
-
-.paginatorPresent {
-  height: 69.2vh;
 }
 
 .header-container {
