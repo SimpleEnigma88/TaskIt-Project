@@ -36,6 +36,7 @@
       <div class="col-sm cardColumns">
         <b>To Do</b>
         <mat-paginator
+            *ngIf="countKanbanTasks('To Do') > 4"
             [length]="countKanbanTasks('To Do')"
             [pageSizeOptions]="[4]"
             (page)="onToDoPageChange($event)">
@@ -64,7 +65,7 @@
                 </span>
                 <div class="form-group mb-0 selectBox">
                   <select class="form-control" [(ngModel)]="task.status"
-                      (change)="onTaskStatusChange(task)" style="width: 115px;">
+                      (change)="onTaskStatusChange(task, oldStatus)" style="width: 115px;">
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Complete">Complete</option>
@@ -78,6 +79,7 @@
       <div class="col-sm cardColumns">
         <b>In Progress</b>
         <mat-paginator
+            *ngIf="countKanbanTasks('In Progress') > 4"
             [length]="countKanbanTasks('In Progress')"
             [pageSizeOptions]="[4]"
             (page)="onInProgressPageChange($event)">
@@ -106,7 +108,7 @@
                 </span>
                 <div class="form-group mb-0 selectBox">
                   <select class="form-control" [(ngModel)]="task.status"
-                      (change)="onTaskStatusChange(task)" style="width: 115px;">
+                      (change)="onTaskStatusChange(task, oldStatus)" style="width: 115px;">
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Complete">Complete</option>
@@ -120,6 +122,7 @@
       <div class="col-sm cardColumns">
         <b>Complete</b>
         <mat-paginator
+            *ngIf="countKanbanTasks('Complete') > 4"
             [length]="countKanbanTasks('Complete')"
             [pageSizeOptions]="[4]"
             (page)="onCompletePageChange($event)">
@@ -149,7 +152,7 @@
                 </span>
                 <div class="form-group mb-0 selectBox">
                   <select class="form-control" [(ngModel)]="task.status"
-                      (change)="onTaskStatusChange(task)" style="width: 115px;">
+                      (change)="onTaskStatusChange(task, oldStatus)" style="width: 115px;">
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Complete">Complete</option>

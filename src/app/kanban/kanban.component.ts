@@ -169,10 +169,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
     this.oldStatus = task.status;
   }
 
-  drop(event: DragEvent, status: string, oldStatus: string) {
-    event.preventDefault();
-    const task = this.draggedTask;
-
+  pageCheck(oldStatus: string) {
     this.taskService.taskSubscription.subscribe((tasks: Task[]) => {
       // Get the tasks with the old status
       const oldStatusTasks = tasks.filter(task => task.status === oldStatus);
@@ -196,6 +193,13 @@ export class KanbanComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  drop(event: DragEvent, status: string, oldStatus: string) {
+    event.preventDefault();
+    const task = this.draggedTask;
+
+    this.pageCheck(oldStatus);
 
     if (task) {
       if (status === 'delete') {
@@ -209,10 +213,9 @@ export class KanbanComponent implements OnInit, OnDestroy {
     }
   }
 
-  onTaskStatusChange(task: Task): void {
+  onTaskStatusChange(task: Task, oldStatus: string): void {
+    this.pageCheck(this.oldStatus);
     this.taskService.updateTask(task);
   }
-
-
 }
 
