@@ -85,6 +85,10 @@ export class KanbanComponent implements OnInit, OnDestroy {
     }
   }
 
+  getRandomTask() {
+    this.taskService.getRandomTask();
+  }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
       data: { title: "Add Task", name: this.name, dueDate: this.dueDate, priority: this.priority, status: this.status },
