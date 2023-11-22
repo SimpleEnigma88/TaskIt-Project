@@ -28,6 +28,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
   completePage = 1;
   selectedTask: Task = null;
   selectCount = 0;
+  oldStatus: string;
 
   constructor(public dialog: MatDialog,
     private taskService: TaskService) { }
@@ -101,7 +102,8 @@ export class KanbanComponent implements OnInit, OnDestroy {
   }
 
   editDialog(index: number): void {
-    if (this.selectedTask !== null) {
+    console.log(index);
+    if (this.taskList[index] !== null) {
       const editTask = this.taskList[index];
 
       if (editTask) {
@@ -163,10 +165,37 @@ export class KanbanComponent implements OnInit, OnDestroy {
   dragOver(event: DragEvent) {
     event.preventDefault();
   }
-  oldStatus: string;
+
   dragStart(event: DragEvent, task: Task) {
     this.draggedTask = task;
     this.oldStatus = task.status;
+  }
+
+
+  drop(event: DragEvent, status: string, oldStatus: string) {
+    event.preventDefault();
+    const task = this.draggedTask;
+
+    this.pageCheck(oldStatus);
+
+    if (task) {
+      if (status === 'delete') {
+        this.taskService.deleteTask(task);
+      } else if (status === 'edit') {
+        this.editDialog(this.taskList.indexOf(task));
+      }
+      else {
+        task.status = status;
+        this.taskService.updateTask(task);
+        this.draggedTask = null;
+        this.taskService.taskSubscription.next(this.taskList.slice());
+      }
+    }
+  }
+
+  onTaskStatusChange(task: Task, oldStatus: string): void {
+    this.pageCheck(oldStatus);
+    this.taskService.updateTask(task);
   }
 
   pageCheck(oldStatus: string) {
@@ -195,27 +224,5 @@ export class KanbanComponent implements OnInit, OnDestroy {
     });
   }
 
-  drop(event: DragEvent, status: string, oldStatus: string) {
-    event.preventDefault();
-    const task = this.draggedTask;
-
-    this.pageCheck(oldStatus);
-
-    if (task) {
-      if (status === 'delete') {
-        this.taskService.deleteTask(task);
-      } else {
-        task.status = status;
-        this.taskService.updateTask(task);
-        this.draggedTask = null;
-        this.taskService.taskSubscription.next(this.taskList.slice());
-      }
-    }
-  }
-
-  onTaskStatusChange(task: Task, oldStatus: string): void {
-    this.pageCheck(this.oldStatus);
-    this.taskService.updateTask(task);
-  }
 }
 

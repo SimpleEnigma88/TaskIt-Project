@@ -3,7 +3,6 @@
     <span>
       <h1><span style="color: green">Kan</span>ban Board</h1>
       <img class="icon-img pointer-cursor d-inline-block"
-
           src="assets/images/addicon.png" alt="Add Task"
           (click)="openDialog()">
       <span class="fadeText">Add Task</span>
@@ -12,7 +11,8 @@
       <div class="image-container d-flex justify-content-evenly">
         <div>
           <img class="edit-icon icon-img mx-3" src="assets/images/editicon.png" alt="Edit Task"
-              (drop)="editDialog(taskList.indexOf(selectedTask))"
+              (drop)="drop($event, 'edit', oldStatus)"
+              (dragover)="dragOver($event)"
               (click)="editDialog(taskList.indexOf(selectedTask))"
               [ngStyle]="{'cursor': selectedTask ? 'pointer' : 'default'}">
         </div>
@@ -39,6 +39,7 @@
             *ngIf="countKanbanTasks('To Do') > 4"
             [length]="countKanbanTasks('To Do')"
             [pageSizeOptions]="[4]"
+            [pageIndex]="pageIndex"
             (page)="onToDoPageChange($event)">
         </mat-paginator>
 
@@ -82,6 +83,7 @@
             *ngIf="countKanbanTasks('In Progress') > 4"
             [length]="countKanbanTasks('In Progress')"
             [pageSizeOptions]="[4]"
+            [pageIndex]="pageIndex"
             (page)="onInProgressPageChange($event)">
         </mat-paginator>
 
@@ -125,6 +127,7 @@
             *ngIf="countKanbanTasks('Complete') > 4"
             [length]="countKanbanTasks('Complete')"
             [pageSizeOptions]="[4]"
+            [pageIndex]="pageIndex"
             (page)="onCompletePageChange($event)">
         </mat-paginator>
 
