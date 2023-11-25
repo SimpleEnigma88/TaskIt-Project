@@ -39,7 +39,7 @@
             <span class="material-symbols-outlined">expand_more</span>
           </ng-template>
           <th (click)="sortTasks('dueDate')">Due Date
-            <ng-container *ngIf="sortState.date"
+            <ng-container *ngIf="sortState.dueDate"
                 [ngTemplateOutlet]="isDueDateAscending ? expandLess : expandMore"></ng-container>
           </th>
 

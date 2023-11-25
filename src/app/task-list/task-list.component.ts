@@ -39,7 +39,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     name: false,
     priority: false,
     status: false,
-    date: false
+    dueDate: false
   };
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -237,6 +237,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
         }
       });
     } else {
+      console.trace()
       this.taskList.sort((a, b) => {
         if (a[key] < b[key]) {
           return order ? 1 : -1;

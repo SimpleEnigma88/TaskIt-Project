@@ -1,12 +1,12 @@
-<app-landing-page *ngIf="isLandingPage"></app-landing-page>
+<app-landing-page *ngIf="isLandingPage" />
 <div class="flex-container" *ngIf="!isLandingPage">
 
   <aside class="sidebar flex-item-fixed">
-    <app-sidebar></app-sidebar>
+    <app-sidebar />
   </aside>
   <main class="main flex-item-grow">
 
-    <router-outlet></router-outlet>
+    <router-outlet />
 
   </main>
 </div>
