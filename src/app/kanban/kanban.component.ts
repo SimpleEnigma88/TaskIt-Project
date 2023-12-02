@@ -106,7 +106,6 @@ export class KanbanComponent implements OnInit, OnDestroy {
   }
 
   editDialog(index: number): void {
-    console.log(index);
     if (this.taskList[index] !== null) {
       const editTask = this.taskList[index];
 
